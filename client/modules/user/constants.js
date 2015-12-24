@@ -1,0 +1,2 @@
+export const REGISTRATE_USER = 'REGISTRATE_USER';
+export const LOGIN_USER = 'LOGIN_USER';
