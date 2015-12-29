@@ -7,6 +7,7 @@ const MODAL_REGISTER = 'MODAL_REGISTER';
 const MODAL_LOGIN = 'MODAL_LOGIN';
 
 @connect(({auth: {authenticated}}) => ({authenticated}))
+@connect(({reg: {registrated}}) => ({registrated}))
 class Navigation extends Component {
     constructor(...options) {
         super(...options);
@@ -21,6 +22,19 @@ class Navigation extends Component {
             modal: type
         })
     }
+
+    componentWillReceiveProps(newProps) {
+
+        if (!this.props.authenticated && newProps.authenticated) {
+            alert('You\'re logged in');
+        }
+
+        if (!this.props.registrated && newProps.registrated) {
+            alert('You\'re registrated in');
+            this.setState({modal:false});
+        }
+    }
+
 
     register(data) {
         console.log("Navigation", data);
@@ -39,12 +53,14 @@ class Navigation extends Component {
                     </Nav>
                 ) : null}
 
-                <Modal onHide={() => {this.setState({modal:false})}} show={!!this.state.modal} aria-labelledby="contained-modal-title-sm">
+                <Modal onHide={() => {this.setState({modal:false})}} show={!!this.state.modal &&
+                    !this.props.authenticated} aria-labelledby="contained-modal-title-sm">
+
                     <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-sm">Modal heading</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {this.state.modal == MODAL_REGISTER ? <Registration onRegister={this.register} /> : <Login />}
+                        {this.state.modal == MODAL_REGISTER ? <Registration /> : <Login />}
                     </Modal.Body>
                 </Modal>
             </Navbar>

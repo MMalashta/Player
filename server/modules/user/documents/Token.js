@@ -1,11 +1,13 @@
 import mongoose, {Schema} from 'mongoose'
-import authPlugin from 'passport-local-mongoose'
+import timestampsPlugin from 'mongoose-timestamp'
 
-let UserSchema = new Schema({
-    email: String,
-    role: {type: String, default: 'user'}
+let TokenSchema = new Schema({
+    token: String,
+    metadata: {},
+    user: {type: Schema.Types.ObjectId, ref: 'User'},
+    expires: Date
 });
 
-UserSchema.plugin(authPlugin);
+TokenSchema.plugin(timestampsPlugin)
 
-export default User = mongoose.model('User', UserSchema);
+export default mongoose.model('Token', TokenSchema);

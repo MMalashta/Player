@@ -1,30 +1,32 @@
 import {LOGIN_USER} from './../constants'
 import {SHOW_ERROR} from './../../application/constants'
-import fetch from 'isomorphic-fetch'
+import {serialize} from '../../../utils/serialize'
 import createAsyncAction from 'redux-promise'
 
 function userAuthenticated(response) {
     if(response.success) {
         return {
             type: LOGIN_USER,
-            data: response.data
+            data: response.data,
+            token: response.token
         }
     } else {
         return {
             type: SHOW_ERROR,
-            error: `Check your credentials`,
-            data: response.data
+            message: response.message,
         }
     }
 }
 
 export const auth = (data): Function => {
     return dispatch => {
-        return fetch(`/api/1/user/auth`)
+        return fetch(`/api/1/user/auth`, { headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        }, method: 'POST', body: serialize(data) })
             .then(response => response.json())
             .then(data => dispatch(userAuthenticated(data)))
     }
-}
+};
 
 export const loadTracks = (data) => {
     return dispatch => {
@@ -35,4 +37,4 @@ export const loadTracks = (data) => {
                 ...data
             }))
     }
-}
+};

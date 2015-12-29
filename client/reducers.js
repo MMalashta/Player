@@ -1,5 +1,7 @@
 import {combineReducers} from 'redux'
-import auth from './modules/user/reducers/index'
+import auth from './modules/user/reducers/login'
+import reg from './modules/user/reducers/registrate'
+import error from './modules/application/reducers/error'
 
 export default combineReducers({
     auth: auth,
@@ -11,5 +13,7 @@ export default combineReducers({
             }
             default: return state
         }
-    }
+    },
+    reg: reg,
+    error: error
 });

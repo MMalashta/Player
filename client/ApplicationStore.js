@@ -1,5 +1,5 @@
 import {createStore, applyMiddleware} from 'redux'
-import thunk from 'redux-thunk';
+import thunk from 'redux-thunk'
 import reducers from './reducers'
 
 const createStoreWithMiddleware = applyMiddleware(
@@ -8,9 +8,11 @@ const createStoreWithMiddleware = applyMiddleware(
 
 let store = createStoreWithMiddleware(reducers, {
     auth: {},
-    tracks: []
-})
+    tracks: [],
+    reg: [],
+    error: {}
+});
 
 export default store;
 
-export const dispatch = store.dispatch
+export const dispatch = store.dispatch;
