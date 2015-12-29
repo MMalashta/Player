@@ -10,7 +10,8 @@ let store = createStoreWithMiddleware(reducers, {
     auth: {},
     tracks: [],
     reg: [],
-    error: {}
+    error: {},
+    playlists: []
 });
 
 export default store;

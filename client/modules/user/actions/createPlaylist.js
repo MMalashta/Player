@@ -1,14 +1,13 @@
-import {LOGIN_USER} from './../constants'
+import {PLAYLIST_CREATED} from './../constants'
 import {SHOW_ERROR} from './../../application/constants'
 import {serialize} from '../../../utils/serialize'
 import createAsyncAction from 'redux-promise'
 
-function userAuthenticated(response) {
-    if(response.success) {
+function playlistCreated(response) {
+    if (response.success) {
         return {
-            type: LOGIN_USER,
+            type: PLAYLIST_CREATED,
             data: response.data,
-            token: response.token
         }
     } else {
         return {
@@ -18,12 +17,12 @@ function userAuthenticated(response) {
     }
 }
 
-export const auth = (data): Function => {
+export const createPl = (data): Function => {
     return dispatch => {
-        return fetch(`/api/1/user/auth`, { headers: {
+        return fetch('/api/1/pl/create', { headers: {
             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
         }, method: 'POST', body: serialize(data) })
             .then(response => response.json())
-            .then(data => dispatch(userAuthenticated(data)))
+            .then(data => dispatch(playlistCreated(data)))
     }
 };

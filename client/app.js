@@ -7,7 +7,8 @@ import ApplicationStore, {dispatch} from './ApplicationStore'
 import history from './history'
 import {Layout, Home, Player} from './modules/application/index'
 
-import {auth, loadTracks} from './modules/user/actions/login'
+import {auth} from './modules/user/actions/login'
+import {loadTracks} from './modules/user/actions/loadTracks'
 
 window.loadTracks = () => dispatch(loadTracks());
 

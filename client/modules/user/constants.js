@@ -1,2 +1,4 @@
 export const REGISTRATE_USER = 'REGISTRATE_USER';
 export const LOGIN_USER = 'LOGIN_USER';
+export const TRACKS_LOADED = "TRACKS_LOADED";
+export const PLAYLIST_CREATED = "PLAYLIST_CREATED";

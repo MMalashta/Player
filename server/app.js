@@ -1,3 +1,6 @@
+import songSet from './utils/loadSongs'
+import playlist from './utils/playlist'
+
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -115,8 +118,18 @@ app.post('/api/1/user/register', (req, res, next) => {
 app.get('/api/1/tracks', (req, res, next) => {
     res.json({
         success: true,
-        data: ["Track 1"]
+        data: songSet
     })
+});
+
+app.post('/api/1/pl/create', (req, res, next) => {
+    var pl = new playlist(req.body.title, req.body.owner);
+    if (pl) {
+        res.json({
+            success: true,
+            data: pl
+        });
+    }
 });
 
 app.use(function(req, res, next) {

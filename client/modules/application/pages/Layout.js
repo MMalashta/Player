@@ -10,7 +10,7 @@ class Layout extends Component {
         return (
             <div>
                 <Navigation />
-                {this.props.authenticated ? <Player /> : null}
+                {(this.props.authenticated && localStorage.authenticated)? <Player /> : null}
                 <div className="container-fluid">
                     {this.props.children}
                 </div>
