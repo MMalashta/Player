@@ -1,10 +1,16 @@
 import {LOGIN_USER} from './../constants'
 import {SHOW_ERROR} from './../../application/constants'
 import {serialize} from '../../../utils/serialize'
-import createAsyncAction from 'redux-promise'
+import {loadAll} from './loadAllPlaylists'
+import {loadTracks} from './loadTracks'
+import {dispatch} from '../../../ApplicationStore'
 
 function userAuthenticated(response) {
     if(response.success) {
+        dispatch(loadAll({
+            userID: response.data._id,
+        }));
+        dispatch(loadTracks());
         return {
             type: LOGIN_USER,
             data: response.data,

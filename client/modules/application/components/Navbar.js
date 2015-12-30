@@ -57,7 +57,7 @@ class Navigation extends Component {
                     !this.props.authenticated} aria-labelledby="contained-modal-title-sm">
 
                     <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title-sm">Modal heading</Modal.Title>
+                        <Modal.Title id="contained-modal-title-sm">{this.state.modal == MODAL_REGISTER ? "Registation" : "Login "}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {this.state.modal == MODAL_REGISTER ? <Registration /> : <Login />}

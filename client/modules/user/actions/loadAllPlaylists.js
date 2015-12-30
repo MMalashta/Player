@@ -1,14 +1,12 @@
-import {PLAYLIST_CREATED} from './../constants'
+import {PLAYLISTS_LOADED} from './../constants'
 import {SHOW_ERROR} from './../../application/constants'
 import {serialize} from '../../../utils/serialize'
-import createAsyncAction from 'redux-promise'
 
-function playlistCreated(response) {
-    if ("here", response.success) {
-        console.log(response.data);
+function playlistsLoaded(response) {
+    if (response.success) {
         return {
-            type: PLAYLIST_CREATED,
-            data: response.data
+            type: PLAYLISTS_LOADED,
+            playlists: response.data
         }
     } else {
         return {
@@ -18,12 +16,12 @@ function playlistCreated(response) {
     }
 }
 
-export const createPl = (data): Function => {
+export const loadAll = (data): Function => {
     return dispatch => {
-        return fetch('/api/1/pl/create', { headers: {
+        return fetch('/api/1/pl/loadAll', { headers: {
             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
         }, method: 'POST', body: serialize(data) })
             .then(response => response.json())
-            .then(data => dispatch(playlistCreated(data)))
+            .then(data => dispatch(playlistsLoaded(data)))
     }
 };

@@ -1,5 +1,8 @@
 import React, {Component} from 'react'
-import {Button} from 'react-bootstrap'
+import {Button, Modal} from 'react-bootstrap'
+import {AddSong} from '../../user/components/index'
+
+const MODAL_ADD_SONG = 'MODAL_ADD_SONG';
 
 class Song extends Component {
     constructor() {
@@ -8,12 +11,21 @@ class Song extends Component {
         this.pause = this.pause.bind(this);
         this.add = this.add.bind(this);
         this.toggleHover = this.toggleHover.bind(this);
+        this.wrapModal = this.wrapModal.bind(this);
         this.isPlaying = false;
-        this.state = {};
+        this.state = {
+            modal: false
+        };
     }
 
     componertWillReceiveProps(newProp) {
         console.log("here", newProps);
+    }
+
+    wrapModal(type) {
+        this.setState({
+            modal: type
+        })
     }
 
     play() {
@@ -33,7 +45,7 @@ class Song extends Component {
     }
 
     add() {
-        console.log("ADD");
+        this.wrapModal(MODAL_ADD_SONG);
     }
 
     toggleHover() {
@@ -51,13 +63,22 @@ class Song extends Component {
 
     render() {
         return <div ref="wrapper" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
-            <audio src={this.props.href} ref="audio">
+            <audio src={this.props.song.url} ref="audio">
             </audio>
             <Button onClick={this.play} className="mdi-av-play-circle-fill" />
             <Button onClick={this.pause} className="mdi-av-pause-circle-fill" />
             <Button onClick={this.add} className="mdi-action-favorite" />
-            <span>{this.props.title}</span>
-            <span style={{color: 'gray'}}> - {this.props.artist}</span>
+            <span>{this.props.song.title}</span>
+            <span style={{color: 'gray'}}> - {this.props.song.artist}</span>
+            <Modal onHide={() => {this.setState({modal:false})}} show={!!this.state.modal} aria-labelledby="contained-modal-title-sm">
+
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-sm">Add Song To</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {this.state.modal == MODAL_ADD_SONG ? <AddSong wrapModal={this.wrapModal} song={this.props.song}/> : null}
+                </Modal.Body>
+            </Modal>
         </div>
     }
 }

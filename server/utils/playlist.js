@@ -1,3 +1,5 @@
+import {} from '../modules/application/documents/Playlist'
+
 class Playlist {
     static count = 0;
 
@@ -5,7 +7,12 @@ class Playlist {
         this.title = title;
         this.owner = owner;
         this.id = Playlist.count;
+        this.songs = [];
         Playlist.count++;
+    }
+
+    savePlaylist() {
+        var pl = new Playlist
     }
 }
 

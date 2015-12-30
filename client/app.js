@@ -7,11 +7,6 @@ import ApplicationStore, {dispatch} from './ApplicationStore'
 import history from './history'
 import {Layout, Home, Player} from './modules/application/index'
 
-import {auth} from './modules/user/actions/login'
-import {loadTracks} from './modules/user/actions/loadTracks'
-
-window.loadTracks = () => dispatch(loadTracks());
-
 ApplicationStore.subscribe(() =>
     console.log(ApplicationStore.getState())
 );

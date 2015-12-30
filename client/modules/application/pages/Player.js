@@ -1,32 +1,51 @@
 import React, {Component} from 'react'
-import {Button} from 'react-bootstrap'
+import {Button, Modal} from 'react-bootstrap'
 import TrackList from '../components/TrackList'
 import Song from '../components/Song'
 import ApplicationStore, {dispatch} from '../../../ApplicationStore'
-import {createPl} from '../../user/actions/createPlaylist'
 import {CreatePlaylist} from './../../user/index'
+import {connect} from 'react-redux'
+
+const MODAL_CREATE_PL = 'MODAL_CREATE_PL';
 
 class Player extends Component{
     constructor() {
         super();
+        this.state = {
+            //block: null,
+            modal: false
+        };
         this.createPlaylist = this.createPlaylist.bind(this);
+        this.wrapModal = this.wrapModal.bind(this);
     }
 
     createPlaylist() {
+        this.wrapModal(MODAL_CREATE_PL);
+        /*this.setState({
+            block: <CreatePlaylist />
+        });*/
+    }
 
-
-        /*console.log("haha", "CREATE");
-        dispatch(createPl({
-            title: "PL1",
-            owner: "i"
-        }));*/
+    wrapModal(type) {
+        this.setState({
+            modal: type
+        })
     }
 
     render() {
         return <div id="player">
             <div id="controls">
                 <Button onClick={this.createPlaylist}>New Playlist</Button>
-                <Button>Next</Button>
+                <Modal onHide={() => {this.setState({modal:false})}} show={!!this.state.modal} aria-labelledby="contained-modal-title-sm">
+
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-sm">Create Playlist</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {this.state.modal == MODAL_CREATE_PL ? <CreatePlaylist wrapModal={this.wrapModal}/> : null}
+                    </Modal.Body>
+                </Modal>
+                {this.state.block}
                 <TrackList/>
             </div>
         </div>

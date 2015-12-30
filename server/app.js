@@ -1,6 +1,3 @@
-import songSet from './utils/loadSongs'
-import playlist from './utils/playlist'
-
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -18,6 +15,8 @@ mongoose.connect('mongodb://localhost/player');
 import {getToken} from './modules/user/service/TokenService'
 import checkUser from './modules/user/middleware/checkUser'
 import User from './modules/user/documents/User'
+import Playlist from './modules/application/documents/Playlist'
+import Song from './modules/application/documents/Song'
 
 var app = express();
 
@@ -116,20 +115,91 @@ app.post('/api/1/user/register', (req, res, next) => {
 });
 
 app.get('/api/1/tracks', (req, res, next) => {
-    res.json({
-        success: true,
-        data: songSet
-    })
+    var songSet = new Set();
+    Song.find((err,songs) =>{
+        if (err) {
+            res.json({
+                success: false,
+                message: err.message
+            })
+        }
+        songs.forEach((song) => {songSet.add(song)});
+        res.json({
+            success: true,
+            data: songSet
+        })
+    });
 });
 
 app.post('/api/1/pl/create', (req, res, next) => {
-    var pl = new playlist(req.body.title, req.body.owner);
-    if (pl) {
-        res.json({
-            success: true,
-            data: pl
+    console.log(req.body);
+    let promise = new Promise((resolve, reject) => {
+        Playlist.findOne({"title": req.body.title, "owner": req.body.owner}, (err, pl) => {
+            if (err) {
+                reject(err.message);
+            }
+            if (pl) {
+                reject("playlist with given name is already created");
+            } else {
+                resolve(req.body);
+            }
+
         });
-    }
+    });
+    promise.
+    then(
+        result => {
+            console.log("lol");
+            var pl = new Playlist({
+                title: result.body.title,
+                owner: result.body.owner,
+                tracks: []
+            });
+            console.log("lol2");
+            pl.save((err, pl) => {
+                if (err) {
+                    console.log("err");
+
+                    return res.json({
+                        success: false,
+                        message: err.message
+                    });
+                }
+                console.log("save");
+                return res.json({
+                    success: true,
+                    data: pl
+                });
+            });
+        },
+        error => {
+            return res.json({
+                success: false,
+                message: error
+            });
+        }
+    );
+});
+
+app.post('/api/1/pl/loadAll', (req, res, next) => {
+    Playlist.find({"owner": req.body.userID}, (err, playlists)=> {
+        if (err) {
+            return res.json({
+                success: false,
+                message: err.message
+            });
+        }
+        return res.json({
+            success: true,
+            data: playlists
+        });
+    })
+});
+
+app.post('/api/1/pl/addSong', (req, res, next) => {
+    console.log(req.body);
+
+    //res.json(req.body);
 });
 
 app.use(function(req, res, next) {

@@ -4,31 +4,33 @@ import {connect} from 'react-redux'
 import ApplicationStore, {dispatch} from '../../../ApplicationStore'
 import {createPl} from '../actions/createPlaylist'
 
-@connect(({auth: {authenticated}}) => ({authenticated}))
-class CreatePlaylist extends Component {
-    constructor (...options) {
-        super(...options);
-        this.state = {};
+@connect(({auth: {user}}) => ({user}))
+export default class CreatePlaylist extends Component {
+    constructor() {
+        super();
         this.create = this.create.bind(this);
     }
 
     create() {
-        dispatch(createPl({
-            title: this.refs.title.value,
-            owner: "i"
-        }));
+        if (this.refs.title.value !== "") {
+            dispatch(createPl({
+                title: this.refs.title.value,
+                owner: this.props.user._id
+            }));
+            this.props.wrapModal(null);
+        } else {
+
+        }
     }
 
     render() {
         return (
             <div>
                 <div className="form-group">
-                    <Input className="form-control" ref="title" placeholder="Title" type="text"/>
+                    <input className="form-control" ref="title" placeholder="Title" type="text"/>
                 </div>
-                <Button onClick={this.create()}>Create</Button>
+                <Button onClick={this.create} bsStyle="primary" active>Create</Button>
             </div>
         );
     }
 }
-
-export default CreatePlaylist
