@@ -138,7 +138,7 @@ app.post('/api/1/pl/create', (req, res, next) => {
             if (err) {
                 reject(err.message);
             }
-            if (pl) {
+            if (pl && pl != null) {
                 reject("playlist with given name is already created");
             } else {
                 resolve(req.body);
@@ -149,23 +149,19 @@ app.post('/api/1/pl/create', (req, res, next) => {
     promise.
     then(
         result => {
-            console.log("lol");
-            var pl = new Playlist({
-                title: result.body.title,
-                owner: result.body.owner,
+            let pl = new Playlist({
+                title: result.title,
+                owner: result.owner,
                 tracks: []
             });
-            console.log("lol2");
+            console.log(pl.title);
             pl.save((err, pl) => {
                 if (err) {
-                    console.log("err");
-
                     return res.json({
                         success: false,
                         message: err.message
                     });
                 }
-                console.log("save");
                 return res.json({
                     success: true,
                     data: pl
@@ -197,9 +193,43 @@ app.post('/api/1/pl/loadAll', (req, res, next) => {
 });
 
 app.post('/api/1/pl/addSong', (req, res, next) => {
-    console.log(req.body);
+    let playlistName = req.body.playlist,
+        songId = req.body.id;
 
-    //res.json(req.body);
+    Playlist.findOne({"title": playlistName}, (err, pl) => {
+        if (err) {
+            return res.json({
+                success: false,
+                message: err.message
+            });
+        }
+
+        if (pl && pl != null) {
+            if (pl.tracks.indexOf(songId) === -1) {
+                pl.tracks.push(songId);
+                pl.modified = new Date();
+
+                pl.save(function (err) {
+                    if (err) {
+                        return res.json({
+                            success: false,
+                            message: err.message
+                        });
+                    }
+                    return res.json({
+                        success: true,
+                        song: songId,
+                        playlist: pl._id
+                    });
+                });
+            } else {
+                return res.json({
+                    success: false,
+                    message: "you have this song in your playlist already"
+                });
+            }
+        }
+    });
 });
 
 app.use(function(req, res, next) {

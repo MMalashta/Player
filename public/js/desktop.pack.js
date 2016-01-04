@@ -25406,16 +25406,16 @@
 	
 	var _modulesApplicationReducersError2 = _interopRequireDefault(_modulesApplicationReducersError);
 	
-	var _modulesUserReducersCreatePlaylist = __webpack_require__(233);
+	var _modulesUserReducersPlaylists = __webpack_require__(599);
 	
-	var _modulesUserReducersCreatePlaylist2 = _interopRequireDefault(_modulesUserReducersCreatePlaylist);
+	var _modulesUserReducersPlaylists2 = _interopRequireDefault(_modulesUserReducersPlaylists);
 	
 	exports['default'] = (0, _redux.combineReducers)({
 	    auth: _modulesUserReducersLogin2['default'],
 	    tracks: _modulesUserReducersLoadTracks2['default'],
 	    reg: _modulesUserReducersRegistrate2['default'],
 	    error: _modulesApplicationReducersError2['default'],
-	    playlists: _modulesUserReducersCreatePlaylist2['default']
+	    playlists: _modulesUserReducersPlaylists2['default']
 	});
 	module.exports = exports['default'];
 
@@ -25472,8 +25472,8 @@
 	exports.PLAYLIST_CREATED = PLAYLIST_CREATED;
 	var PLAYLISTS_LOADED = "PLAYLISTS_LOADED";
 	exports.PLAYLISTS_LOADED = PLAYLISTS_LOADED;
-	var TRACK_ADDED = "TRACK_ADDED";
-	exports.TRACK_ADDED = TRACK_ADDED;
+	var PLAYLIST_TRACK_ADDED = "PLAYLIST_TRACK_ADDED";
+	exports.PLAYLIST_TRACK_ADDED = PLAYLIST_TRACK_ADDED;
 
 /***/ },
 /* 229 */
@@ -25587,43 +25587,7 @@
 	exports.HIDE_ERROR = HIDE_ERROR;
 
 /***/ },
-/* 233 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	var _redux = __webpack_require__(213);
-	
-	var _constants = __webpack_require__(228);
-	
-	exports['default'] = function (state, action) {
-	    if (state === undefined) state = {};
-	
-	    switch (action.type) {
-	        case _constants.PLAYLIST_CREATED:
-	            {
-	                return Object.assign({}, state, { playlists: state.playlists.concat(action.data) });
-	            }
-	
-	        case _constants.PLAYLISTS_LOADED:
-	            {
-	                return Object.assign({}, state, { playlists: action.playlists });
-	            }
-	
-	        default:
-	            {
-	                return state;
-	            }
-	    }
-	};
-	
-	module.exports = exports['default'];
-
-/***/ },
+/* 233 */,
 /* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -26095,7 +26059,7 @@
 	
 	exports.Layout = _interopRequire(_Layout);
 	
-	var _Player = __webpack_require__(504);
+	var _Player = __webpack_require__(508);
 	
 	exports.Player = _interopRequire(_Player);
 
@@ -26185,7 +26149,7 @@
 	
 	var _componentsNavbar2 = _interopRequireDefault(_componentsNavbar);
 	
-	var _Player = __webpack_require__(504);
+	var _Player = __webpack_require__(508);
 	
 	var _Player2 = _interopRequireDefault(_Player);
 	
@@ -43309,11 +43273,11 @@
 	
 	exports.Login = _interopRequire(_Login);
 	
-	var _CreatePlaylist = __webpack_require__(502);
+	var _CreatePlaylist = __webpack_require__(504);
 	
 	exports.CreatePlaylist = _interopRequire(_CreatePlaylist);
 	
-	var _AddSong = __webpack_require__(596);
+	var _AddSong = __webpack_require__(506);
 	
 	exports.AddSong = _interopRequire(_AddSong);
 
@@ -44339,9 +44303,9 @@
 	
 	var _utilsSerialize = __webpack_require__(492);
 	
-	var _loadAllPlaylists = __webpack_require__(598);
+	var _loadAllPlaylists = __webpack_require__(502);
 	
-	var _loadTracks = __webpack_require__(507);
+	var _loadTracks = __webpack_require__(503);
 	
 	var _ApplicationStore = __webpack_require__(224);
 	
@@ -44387,6 +44351,96 @@
 	    value: true
 	});
 	
+	var _constants = __webpack_require__(228);
+	
+	var _applicationConstants = __webpack_require__(232);
+	
+	var _utilsSerialize = __webpack_require__(492);
+	
+	function playlistsLoaded(response) {
+	    if (response.success) {
+	        return {
+	            type: _constants.PLAYLISTS_LOADED,
+	            playlists: response.data
+	        };
+	    } else {
+	        return {
+	            type: _applicationConstants.SHOW_ERROR,
+	            message: response.message
+	        };
+	    }
+	}
+	
+	var loadAll = function loadAll(data) {
+	    return function (dispatch) {
+	        return fetch('/api/1/pl/loadAll', { headers: {
+	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+	            }, method: 'POST', body: (0, _utilsSerialize.serialize)(data) }).then(function (response) {
+	            return response.json();
+	        }).then(function (data) {
+	            return dispatch(playlistsLoaded(data));
+	        });
+	    };
+	};
+	exports.loadAll = loadAll;
+
+/***/ },
+/* 503 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _constants = __webpack_require__(228);
+	
+	var _applicationConstants = __webpack_require__(232);
+	
+	var _utilsSerialize = __webpack_require__(492);
+	
+	var _reduxPromise = __webpack_require__(493);
+	
+	var _reduxPromise2 = _interopRequireDefault(_reduxPromise);
+	
+	function tracksLoaded(response) {
+	    if (response.success) {
+	        return {
+	            type: _constants.TRACKS_LOADED,
+	            tracks: response.data
+	        };
+	    } else {
+	        return {
+	            type: _applicationConstants.SHOW_ERROR,
+	            message: response.message
+	        };
+	    }
+	}
+	
+	var loadTracks = function loadTracks(data) {
+	    return function (dispatch) {
+	        return fetch('/api/1/tracks').then(function (response) {
+	            return response.json();
+	        }).then(function (data) {
+	            return dispatch(tracksLoaded(data));
+	        });
+	    };
+	};
+	exports.loadTracks = loadTracks;
+
+/***/ },
+/* 504 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -44409,7 +44463,7 @@
 	
 	var _ApplicationStore2 = _interopRequireDefault(_ApplicationStore);
 	
-	var _actionsCreatePlaylist = __webpack_require__(503);
+	var _actionsCreatePlaylist = __webpack_require__(505);
 	
 	var CreatePlaylist = (function (_Component) {
 	    _inherits(CreatePlaylist, _Component);
@@ -44464,7 +44518,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 503 */
+/* 505 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44514,7 +44568,7 @@
 	exports.createPl = createPl;
 
 /***/ },
-/* 504 */
+/* 506 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44539,11 +44593,164 @@
 	
 	var _reactBootstrap = __webpack_require__(246);
 	
-	var _componentsTrackList = __webpack_require__(505);
+	var _reactRedux = __webpack_require__(206);
+	
+	var _ApplicationStore = __webpack_require__(224);
+	
+	var _ApplicationStore2 = _interopRequireDefault(_ApplicationStore);
+	
+	var _actionsAddSong = __webpack_require__(507);
+	
+	var AddSong = (function (_Component) {
+	    _inherits(AddSong, _Component);
+	
+	    function AddSong() {
+	        _classCallCheck(this, _AddSong);
+	
+	        _get(Object.getPrototypeOf(_AddSong.prototype), 'constructor', this).call(this);
+	        this.add = this.add.bind(this);
+	        this.onChange = this.onChange.bind(this);
+	        this.currentValue = "";
+	    }
+	
+	    _createClass(AddSong, [{
+	        key: 'add',
+	        value: function add() {
+	            (0, _ApplicationStore.dispatch)((0, _actionsAddSong.addTrack)({
+	                playlist: this.currentValue,
+	                id: this.props.song._id
+	            }));
+	            this.props.wrapModal(null);
+	        }
+	    }, {
+	        key: 'onChange',
+	        value: function onChange() {
+	            this.currentValue = this.refs.select.value;
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this = this;
+	
+	            return _react2['default'].createElement(
+	                _reactBootstrap.Row,
+	                null,
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Col,
+	                    { md: '4' },
+	                    _react2['default'].createElement(
+	                        'select',
+	                        { className: 'form-control', style: { margin: '10px' }, onChange: this.onChange, ref: 'select' },
+	                        this.props.playlists.playlists ? this.props.playlists.playlists.map(function (pl, idx) {
+	                            if (idx == 0) {
+	                                _this.currentValue = pl.title;
+	                            }return _react2['default'].createElement(
+	                                'option',
+	                                { value: pl.title },
+	                                pl.title
+	                            );
+	                        }) : null
+	                    )
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Col,
+	                    { md: '2' },
+	                    _react2['default'].createElement(
+	                        _reactBootstrap.Button,
+	                        { onClick: this.add, bsStyle: 'primary', active: true },
+	                        'Add'
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    var _AddSong = AddSong;
+	    AddSong = (0, _reactRedux.connect)(function (playlists) {
+	        return playlists;
+	    })(AddSong) || AddSong;
+	    return AddSong;
+	})(_react.Component);
+	
+	exports['default'] = AddSong;
+	module.exports = exports['default'];
+
+/***/ },
+/* 507 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _constants = __webpack_require__(228);
+	
+	var _applicationConstants = __webpack_require__(232);
+	
+	var _utilsSerialize = __webpack_require__(492);
+	
+	function trackAdded(response) {
+	    console.log(response);
+	    if (response.success) {
+	        return {
+	            type: _constants.PLAYLIST_TRACK_ADDED,
+	            song: response.song,
+	            playlist: response.playlist
+	        };
+	    } else {
+	        return {
+	            type: _applicationConstants.SHOW_ERROR,
+	            message: response.message
+	        };
+	    }
+	}
+	
+	var addTrack = function addTrack(data) {
+	    return function (dispatch) {
+	        return fetch('/api/1/pl/addSong', { headers: {
+	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+	            }, method: 'POST', body: (0, _utilsSerialize.serialize)(data) }).then(function (response) {
+	            return response.json();
+	        }).then(function (data) {
+	            return dispatch(trackAdded(data));
+	        });
+	    };
+	};
+	exports.addTrack = addTrack;
+
+/***/ },
+/* 508 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactBootstrap = __webpack_require__(246);
+	
+	var _componentsTrackList = __webpack_require__(509);
 	
 	var _componentsTrackList2 = _interopRequireDefault(_componentsTrackList);
 	
-	var _componentsSong = __webpack_require__(506);
+	var _componentsSong = __webpack_require__(510);
 	
 	var _componentsSong2 = _interopRequireDefault(_componentsSong);
 	
@@ -44637,7 +44844,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 505 */
+/* 509 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44662,7 +44869,7 @@
 	
 	var _reactBootstrap = __webpack_require__(246);
 	
-	var _Song = __webpack_require__(506);
+	var _Song = __webpack_require__(510);
 	
 	var _Song2 = _interopRequireDefault(_Song);
 	
@@ -44708,7 +44915,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 506 */
+/* 510 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44858,56 +45065,6 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 507 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _constants = __webpack_require__(228);
-	
-	var _applicationConstants = __webpack_require__(232);
-	
-	var _utilsSerialize = __webpack_require__(492);
-	
-	var _reduxPromise = __webpack_require__(493);
-	
-	var _reduxPromise2 = _interopRequireDefault(_reduxPromise);
-	
-	function tracksLoaded(response) {
-	    if (response.success) {
-	        return {
-	            type: _constants.TRACKS_LOADED,
-	            tracks: response.data
-	        };
-	    } else {
-	        return {
-	            type: _applicationConstants.SHOW_ERROR,
-	            message: response.message
-	        };
-	    }
-	}
-	
-	var loadTracks = function loadTracks(data) {
-	    return function (dispatch) {
-	        return fetch('/api/1/tracks').then(function (response) {
-	            return response.json();
-	        }).then(function (data) {
-	            return dispatch(tracksLoaded(data));
-	        });
-	    };
-	};
-	exports.loadTracks = loadTracks;
-
-/***/ },
-/* 508 */,
-/* 509 */,
-/* 510 */,
 /* 511 */,
 /* 512 */,
 /* 513 */,
@@ -44993,7 +45150,10 @@
 /* 593 */,
 /* 594 */,
 /* 595 */,
-/* 596 */
+/* 596 */,
+/* 597 */,
+/* 598 */,
+/* 599 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45002,189 +45162,50 @@
 	    value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _redux = __webpack_require__(213);
 	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _constants = __webpack_require__(228);
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	exports['default'] = function (state, action) {
+	    if (state === undefined) state = {};
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	    switch (action.type) {
+	        case _constants.PLAYLIST_CREATED:
+	            {
+	                return Object.assign({}, state, { playlists: state.playlists.concat(action.data) });
+	            }
 	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	        case _constants.PLAYLISTS_LOADED:
+	            {
+	                return Object.assign({}, state, { playlists: action.playlists });
+	            }
 	
-	var _react = __webpack_require__(1);
+	        case _constants.PLAYLIST_TRACK_ADDED:
+	            {
+	                var oldPlaylists = state.playlists,
+	                    index = -1;
+	                for (var i = 0, len = oldPlaylists.length; i < len; i++) {
+	                    if (oldPlaylists[i]._id === action.playlist) {
+	                        index = i;
+	                        oldPlaylists[i].tracks.push(action.song);
+	                        break;
+	                    }
+	                }
 	
-	var _react2 = _interopRequireDefault(_react);
+	                if (index === -1) {
+	                    return state;
+	                }
+	                return Object.assign({}, state, { playlists: oldPlaylists });
+	            }
 	
-	var _reactBootstrap = __webpack_require__(246);
-	
-	var _reactRedux = __webpack_require__(206);
-	
-	var _ApplicationStore = __webpack_require__(224);
-	
-	var _ApplicationStore2 = _interopRequireDefault(_ApplicationStore);
-	
-	var _actionsAddSong = __webpack_require__(597);
-	
-	var AddSong = (function (_Component) {
-	    _inherits(AddSong, _Component);
-	
-	    function AddSong() {
-	        _classCallCheck(this, _AddSong);
-	
-	        _get(Object.getPrototypeOf(_AddSong.prototype), 'constructor', this).call(this);
-	        this.add = this.add.bind(this);
-	        this.onChange = this.onChange.bind(this);
-	        this.currentValue = "";
+	        default:
+	            {
+	                return state;
+	            }
 	    }
+	};
 	
-	    _createClass(AddSong, [{
-	        key: 'add',
-	        value: function add() {
-	            (0, _ApplicationStore.dispatch)((0, _actionsAddSong.addTrack)({
-	                playlist: this.currentValue,
-	                id: this.props.song._id
-	            }));
-	            this.props.wrapModal(null);
-	        }
-	    }, {
-	        key: 'onChange',
-	        value: function onChange() {
-	            this.currentValue = this.refs.select.value;
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this = this;
-	
-	            return _react2['default'].createElement(
-	                _reactBootstrap.Row,
-	                null,
-	                _react2['default'].createElement(
-	                    _reactBootstrap.Col,
-	                    { md: '4' },
-	                    _react2['default'].createElement(
-	                        'select',
-	                        { className: 'form-control', style: { margin: '10px' }, onChange: this.onChange, ref: 'select' },
-	                        this.props.playlists.playlists ? this.props.playlists.playlists.map(function (pl, idx) {
-	                            if (idx == 0) {
-	                                _this.currentValue = pl.title;
-	                            }return _react2['default'].createElement(
-	                                'option',
-	                                { value: pl.title },
-	                                pl.title
-	                            );
-	                        }) : null
-	                    )
-	                ),
-	                _react2['default'].createElement(
-	                    _reactBootstrap.Col,
-	                    { md: '2' },
-	                    _react2['default'].createElement(
-	                        _reactBootstrap.Button,
-	                        { onClick: this.add, bsStyle: 'primary', active: true },
-	                        'Add'
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-	
-	    var _AddSong = AddSong;
-	    AddSong = (0, _reactRedux.connect)(function (playlists) {
-	        return playlists;
-	    })(AddSong) || AddSong;
-	    return AddSong;
-	})(_react.Component);
-	
-	exports['default'] = AddSong;
 	module.exports = exports['default'];
-
-/***/ },
-/* 597 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	var _constants = __webpack_require__(228);
-	
-	var _applicationConstants = __webpack_require__(232);
-	
-	var _utilsSerialize = __webpack_require__(492);
-	
-	function trackAdded(response) {
-	    if (response.success) {
-	        return {
-	            type: _constants.TRACK_ADDED,
-	            data: response.data
-	        };
-	    } else {
-	        return {
-	            type: _applicationConstants.SHOW_ERROR,
-	            message: response.message
-	        };
-	    }
-	}
-	
-	var addTrack = function addTrack(data) {
-	    return function (dispatch) {
-	        return fetch('/api/1/pl/addSong', { headers: {
-	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-	            }, method: 'POST', body: (0, _utilsSerialize.serialize)(data) }).then(function (response) {
-	            return response.json();
-	        }).then(function (data) {
-	            return dispatch(trackAdded(data));
-	        });
-	    };
-	};
-	exports.addTrack = addTrack;
-
-/***/ },
-/* 598 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	var _constants = __webpack_require__(228);
-	
-	var _applicationConstants = __webpack_require__(232);
-	
-	var _utilsSerialize = __webpack_require__(492);
-	
-	function playlistsLoaded(response) {
-	    if (response.success) {
-	        return {
-	            type: _constants.PLAYLISTS_LOADED,
-	            playlists: response.data
-	        };
-	    } else {
-	        return {
-	            type: _applicationConstants.SHOW_ERROR,
-	            message: response.message
-	        };
-	    }
-	}
-	
-	var loadAll = function loadAll(data) {
-	    return function (dispatch) {
-	        return fetch('/api/1/pl/loadAll', { headers: {
-	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-	            }, method: 'POST', body: (0, _utilsSerialize.serialize)(data) }).then(function (response) {
-	            return response.json();
-	        }).then(function (data) {
-	            return dispatch(playlistsLoaded(data));
-	        });
-	    };
-	};
-	exports.loadAll = loadAll;
 
 /***/ }
 /******/ ]);

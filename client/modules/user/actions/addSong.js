@@ -1,17 +1,19 @@
-import {TRACK_ADDED} from './../constants'
+import {PLAYLIST_TRACK_ADDED} from './../constants'
 import {SHOW_ERROR} from './../../application/constants'
 import {serialize} from '../../../utils/serialize'
 
 function trackAdded(response) {
+    console.log(response);
     if (response.success) {
         return {
-            type: TRACK_ADDED,
-            data: response.data,
+            type: PLAYLIST_TRACK_ADDED,
+            song: response.song,
+            playlist: response.playlist
         }
     } else {
         return {
             type: SHOW_ERROR,
-            message: response.message,
+            message: response.message
         }
     }
 }
