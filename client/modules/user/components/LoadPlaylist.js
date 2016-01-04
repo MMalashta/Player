@@ -2,23 +2,22 @@ import React, {Component} from 'react'
 import {Button, FormControls, Row, Col} from 'react-bootstrap'
 import {connect} from 'react-redux'
 import ApplicationStore, {dispatch} from '../../../ApplicationStore'
-import {addTrack} from '../actions/addSong'
+import {loadPl} from '../actions/loadPlaylist'
 
 @connect((playlists) => (playlists))
 @connect(({auth: {user}}) => ({user}))
-export default class AddSong extends Component {
+export default class LoadPlaylist extends Component {
     constructor() {
         super();
-        this.add = this.add.bind(this);
+        this.load = this.load.bind(this);
         this.onChange = this.onChange.bind(this);
         this.currentValue = "";
     }
 
-    add() {
-        dispatch(addTrack({
+    load() {
+        dispatch(loadPl({
             playlist: this.currentValue,
-            owner: this.props.user._id,
-            id: this.props.song._id
+            owner: this.props.user._id
         }));
         this.props.wrapModal(null);
     }
@@ -36,7 +35,7 @@ export default class AddSong extends Component {
                     </select>
                 </Col>
                 <Col md="2">
-                    <Button onClick={this.add} bsStyle="primary" active>Add</Button>
+                    <Button onClick={this.load} bsStyle="primary" active>Load</Button>
                 </Col>
             </Row>
         );

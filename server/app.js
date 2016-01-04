@@ -232,6 +232,23 @@ app.post('/api/1/pl/addSong', (req, res, next) => {
     });
 });
 
+app.post('/api/1/pl/load', (req, res, next) => {
+    Playlist.findOne({"title": req.body.playlist, "owner": req.body.owner}, (err, pl) => {
+        if (err) {
+            return res.json({
+                success: false,
+                message: err.message
+            });
+        }
+        if (pl && pl != null) {
+            return res.json({
+                success: true,
+                data: pl.tracks
+            });
+        }
+    });
+});
+
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;

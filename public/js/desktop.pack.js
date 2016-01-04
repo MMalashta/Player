@@ -25474,6 +25474,8 @@
 	exports.PLAYLISTS_LOADED = PLAYLISTS_LOADED;
 	var PLAYLIST_TRACK_ADDED = "PLAYLIST_TRACK_ADDED";
 	exports.PLAYLIST_TRACK_ADDED = PLAYLIST_TRACK_ADDED;
+	var PLAYLIST_LOADED = "PLAYLIST_LOADED";
+	exports.PLAYLIST_LOADED = PLAYLIST_LOADED;
 
 /***/ },
 /* 229 */
@@ -43280,6 +43282,10 @@
 	var _AddSong = __webpack_require__(506);
 	
 	exports.AddSong = _interopRequire(_AddSong);
+	
+	var _LoadPlaylist = __webpack_require__(614);
+	
+	exports.LoadPlaylist = _interopRequire(_LoadPlaylist);
 
 /***/ },
 /* 490 */
@@ -44618,6 +44624,7 @@
 	        value: function add() {
 	            (0, _ApplicationStore.dispatch)((0, _actionsAddSong.addTrack)({
 	                playlist: this.currentValue,
+	                owner: this.props.user._id,
 	                id: this.props.song._id
 	            }));
 	            this.props.wrapModal(null);
@@ -44666,6 +44673,10 @@
 	    }]);
 	
 	    var _AddSong = AddSong;
+	    AddSong = (0, _reactRedux.connect)(function (_ref) {
+	        var user = _ref.auth.user;
+	        return { user: user };
+	    })(AddSong) || AddSong;
 	    AddSong = (0, _reactRedux.connect)(function (playlists) {
 	        return playlists;
 	    })(AddSong) || AddSong;
@@ -44744,25 +44755,13 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactBootstrap = __webpack_require__(246);
-	
-	var _componentsTrackList = __webpack_require__(509);
-	
-	var _componentsTrackList2 = _interopRequireDefault(_componentsTrackList);
-	
-	var _componentsSong = __webpack_require__(510);
-	
-	var _componentsSong2 = _interopRequireDefault(_componentsSong);
-	
 	var _ApplicationStore = __webpack_require__(224);
 	
 	var _ApplicationStore2 = _interopRequireDefault(_ApplicationStore);
 	
-	var _userIndex = __webpack_require__(488);
+	var _componentsTabsInstance = __webpack_require__(616);
 	
-	var _reactRedux = __webpack_require__(206);
-	
-	var MODAL_CREATE_PL = 'MODAL_CREATE_PL';
+	var _componentsTabsInstance2 = _interopRequireDefault(_componentsTabsInstance);
 	
 	var Player = (function (_Component) {
 	    _inherits(Player, _Component);
@@ -44770,69 +44769,16 @@
 	    function Player() {
 	        _classCallCheck(this, Player);
 	
-	        _get(Object.getPrototypeOf(Player.prototype), 'constructor', this).call(this);
-	        this.state = {
-	            //block: null,
-	            modal: false
-	        };
-	        this.createPlaylist = this.createPlaylist.bind(this);
-	        this.wrapModal = this.wrapModal.bind(this);
+	        _get(Object.getPrototypeOf(Player.prototype), 'constructor', this).apply(this, arguments);
 	    }
 	
 	    _createClass(Player, [{
-	        key: 'createPlaylist',
-	        value: function createPlaylist() {
-	            this.wrapModal(MODAL_CREATE_PL);
-	            /*this.setState({
-	                block: <CreatePlaylist />
-	            });*/
-	        }
-	    }, {
-	        key: 'wrapModal',
-	        value: function wrapModal(type) {
-	            this.setState({
-	                modal: type
-	            });
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this = this;
-	
 	            return _react2['default'].createElement(
 	                'div',
 	                { id: 'player' },
-	                _react2['default'].createElement(
-	                    'div',
-	                    { id: 'controls' },
-	                    _react2['default'].createElement(
-	                        _reactBootstrap.Button,
-	                        { onClick: this.createPlaylist },
-	                        'New Playlist'
-	                    ),
-	                    _react2['default'].createElement(
-	                        _reactBootstrap.Modal,
-	                        { onHide: function () {
-	                                _this.setState({ modal: false });
-	                            }, show: !!this.state.modal, 'aria-labelledby': 'contained-modal-title-sm' },
-	                        _react2['default'].createElement(
-	                            _reactBootstrap.Modal.Header,
-	                            { closeButton: true },
-	                            _react2['default'].createElement(
-	                                _reactBootstrap.Modal.Title,
-	                                { id: 'contained-modal-title-sm' },
-	                                'Create Playlist'
-	                            )
-	                        ),
-	                        _react2['default'].createElement(
-	                            _reactBootstrap.Modal.Body,
-	                            null,
-	                            this.state.modal == MODAL_CREATE_PL ? _react2['default'].createElement(_userIndex.CreatePlaylist, { wrapModal: this.wrapModal }) : null
-	                        )
-	                    ),
-	                    this.state.block,
-	                    _react2['default'].createElement(_componentsTrackList2['default'], null)
-	                )
+	                _react2['default'].createElement(_componentsTabsInstance2['default'], null)
 	            );
 	        }
 	    }]);
@@ -44954,7 +44900,8 @@
 	        this.play = this.play.bind(this);
 	        this.pause = this.pause.bind(this);
 	        this.add = this.add.bind(this);
-	        this.toggleHover = this.toggleHover.bind(this);
+	        this.HoverEnter = this.HoverEnter.bind(this);
+	        this.HoverOut = this.HoverOut.bind(this);
 	        this.wrapModal = this.wrapModal.bind(this);
 	        this.isPlaying = false;
 	        this.state = {
@@ -44988,7 +44935,7 @@
 	        value: function pause() {
 	            if (this.isPlaying) {
 	                this.refs.audio.pause();
-	                this.refs.wrapper.style.background = "#26A69A";
+	                this.refs.wrapper.style.background = "#EEEEEE";
 	                this.isPlaying = false;
 	            }
 	        }
@@ -44998,18 +44945,21 @@
 	            this.wrapModal(MODAL_ADD_SONG);
 	        }
 	    }, {
-	        key: 'toggleHover',
-	        value: function toggleHover() {
+	        key: 'HoverEnter',
+	        value: function HoverEnter() {
 	            if (this.isPlaying) {
 	                return;
 	            }
 	
-	            this.setState({ hover: !this.state.hover });
-	            if (!this.state.hover) {
-	                this.refs.wrapper.style.background = "#26A69A";
-	            } else {
-	                this.refs.wrapper.style.background = "white";
+	            this.refs.wrapper.style.background = "#26A69A";
+	        }
+	    }, {
+	        key: 'HoverOut',
+	        value: function HoverOut() {
+	            if (this.isPlaying) {
+	                return;
 	            }
+	            this.refs.wrapper.style.background = "#EEEEEE";
 	        }
 	    }, {
 	        key: 'render',
@@ -45018,7 +44968,7 @@
 	
 	            return _react2['default'].createElement(
 	                'div',
-	                { ref: 'wrapper', onMouseEnter: this.toggleHover, onMouseLeave: this.toggleHover },
+	                { ref: 'wrapper', onMouseEnter: this.HoverEnter, onMouseLeave: this.HoverOut },
 	                _react2['default'].createElement('audio', { src: this.props.song.url, ref: 'audio' }),
 	                _react2['default'].createElement(_reactBootstrap.Button, { onClick: this.play, className: 'mdi-av-play-circle-fill' }),
 	                _react2['default'].createElement(_reactBootstrap.Button, { onClick: this.pause, className: 'mdi-av-pause-circle-fill' }),
@@ -45187,7 +45137,7 @@
 	                for (var i = 0, len = oldPlaylists.length; i < len; i++) {
 	                    if (oldPlaylists[i]._id === action.playlist) {
 	                        index = i;
-	                        oldPlaylists[i].tracks.push(action.song);
+	                        oldPlaylists[i].tracks.push(action.data);
 	                        break;
 	                    }
 	                }
@@ -45198,6 +45148,11 @@
 	                return Object.assign({}, state, { playlists: oldPlaylists });
 	            }
 	
+	        case _constants.PLAYLIST_LOADED:
+	            {
+	                return Object.assign({}, state, { playlistLoaded: true });
+	            }
+	
 	        default:
 	            {
 	                return state;
@@ -45205,6 +45160,474 @@
 	    }
 	};
 	
+	module.exports = exports['default'];
+
+/***/ },
+/* 600 */,
+/* 601 */,
+/* 602 */,
+/* 603 */,
+/* 604 */,
+/* 605 */,
+/* 606 */,
+/* 607 */,
+/* 608 */,
+/* 609 */,
+/* 610 */,
+/* 611 */,
+/* 612 */,
+/* 613 */,
+/* 614 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactBootstrap = __webpack_require__(246);
+	
+	var _reactRedux = __webpack_require__(206);
+	
+	var _ApplicationStore = __webpack_require__(224);
+	
+	var _ApplicationStore2 = _interopRequireDefault(_ApplicationStore);
+	
+	var _actionsLoadPlaylist = __webpack_require__(615);
+	
+	var LoadPlaylist = (function (_Component) {
+	    _inherits(LoadPlaylist, _Component);
+	
+	    function LoadPlaylist() {
+	        _classCallCheck(this, _LoadPlaylist);
+	
+	        _get(Object.getPrototypeOf(_LoadPlaylist.prototype), 'constructor', this).call(this);
+	        this.load = this.load.bind(this);
+	        this.onChange = this.onChange.bind(this);
+	        this.currentValue = "";
+	    }
+	
+	    _createClass(LoadPlaylist, [{
+	        key: 'load',
+	        value: function load() {
+	            (0, _ApplicationStore.dispatch)((0, _actionsLoadPlaylist.loadPl)({
+	                playlist: this.currentValue,
+	                owner: this.props.user._id
+	            }));
+	            this.props.wrapModal(null);
+	        }
+	    }, {
+	        key: 'onChange',
+	        value: function onChange() {
+	            this.currentValue = this.refs.select.value;
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this = this;
+	
+	            return _react2['default'].createElement(
+	                _reactBootstrap.Row,
+	                null,
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Col,
+	                    { md: '4' },
+	                    _react2['default'].createElement(
+	                        'select',
+	                        { className: 'form-control', style: { margin: '10px' }, onChange: this.onChange, ref: 'select' },
+	                        this.props.playlists.playlists ? this.props.playlists.playlists.map(function (pl, idx) {
+	                            if (idx == 0) {
+	                                _this.currentValue = pl.title;
+	                            }return _react2['default'].createElement(
+	                                'option',
+	                                { value: pl.title },
+	                                pl.title
+	                            );
+	                        }) : null
+	                    )
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Col,
+	                    { md: '2' },
+	                    _react2['default'].createElement(
+	                        _reactBootstrap.Button,
+	                        { onClick: this.load, bsStyle: 'primary', active: true },
+	                        'Load'
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    var _LoadPlaylist = LoadPlaylist;
+	    LoadPlaylist = (0, _reactRedux.connect)(function (_ref) {
+	        var user = _ref.auth.user;
+	        return { user: user };
+	    })(LoadPlaylist) || LoadPlaylist;
+	    LoadPlaylist = (0, _reactRedux.connect)(function (playlists) {
+	        return playlists;
+	    })(LoadPlaylist) || LoadPlaylist;
+	    return LoadPlaylist;
+	})(_react.Component);
+	
+	exports['default'] = LoadPlaylist;
+	module.exports = exports['default'];
+
+/***/ },
+/* 615 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _constants = __webpack_require__(228);
+	
+	var _applicationConstants = __webpack_require__(232);
+	
+	var _utilsSerialize = __webpack_require__(492);
+	
+	function playlistLoaded(response) {
+	    if (response.success) {
+	        console.log(response.data);
+	        return {
+	            type: _constants.PLAYLIST_LOADED,
+	            data: response.data
+	        };
+	    } else {
+	        return {
+	            type: _applicationConstants.SHOW_ERROR,
+	            message: response.message
+	        };
+	    }
+	}
+	
+	var loadPl = function loadPl(data) {
+	    return function (dispatch) {
+	        return fetch('/api/1/pl/load', { headers: {
+	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+	            }, method: 'POST', body: (0, _utilsSerialize.serialize)(data) }).then(function (response) {
+	            return response.json();
+	        }).then(function (data) {
+	            return dispatch(playlistLoaded(data));
+	        });
+	    };
+	};
+	exports.loadPl = loadPl;
+
+/***/ },
+/* 616 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactBootstrap = __webpack_require__(246);
+	
+	var _componentsTrackList = __webpack_require__(509);
+	
+	var _componentsTrackList2 = _interopRequireDefault(_componentsTrackList);
+	
+	var _Playlists = __webpack_require__(618);
+	
+	var _Playlists2 = _interopRequireDefault(_Playlists);
+	
+	var TabsInstance = (function (_Component) {
+	    _inherits(TabsInstance, _Component);
+	
+	    function TabsInstance() {
+	        _classCallCheck(this, TabsInstance);
+	
+	        _get(Object.getPrototypeOf(TabsInstance.prototype), 'constructor', this).apply(this, arguments);
+	    }
+	
+	    _createClass(TabsInstance, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                _reactBootstrap.Tabs,
+	                { defaultActiveKey: 2 },
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Tab,
+	                    { eventKey: 1, title: 'Tracks' },
+	                    _react2['default'].createElement(_componentsTrackList2['default'], null)
+	                ),
+	                _react2['default'].createElement(_reactBootstrap.Tab, { eventKey: 2, title: 'Albums', disabled: true }),
+	                _react2['default'].createElement(_reactBootstrap.Tab, { eventKey: 3, title: 'Artists', disabled: true }),
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Tab,
+	                    { eventKey: 4, title: 'Playlists' },
+	                    _react2['default'].createElement(_Playlists2['default'], null)
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return TabsInstance;
+	})(_react.Component);
+	
+	exports['default'] = TabsInstance;
+	module.exports = exports['default'];
+
+/***/ },
+/* 617 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactBootstrap = __webpack_require__(246);
+	
+	var _userIndex = __webpack_require__(488);
+	
+	var MODAL_CREATE_PL = 'MODAL_CREATE_PL';
+	var MODAL_LOAD_PL = "MODAL_LOAD_PL";
+	
+	var PlaylistsMenu = (function (_Component) {
+	    _inherits(PlaylistsMenu, _Component);
+	
+	    function PlaylistsMenu() {
+	        _classCallCheck(this, PlaylistsMenu);
+	
+	        _get(Object.getPrototypeOf(PlaylistsMenu.prototype), 'constructor', this).call(this);
+	        this.state = {
+	            modal: false
+	        };
+	        this.createPlaylist = this.createPlaylist.bind(this);
+	        this.loadPlaylist = this.loadPlaylist.bind(this);
+	        this.wrapModal = this.wrapModal.bind(this);
+	    }
+	
+	    _createClass(PlaylistsMenu, [{
+	        key: 'createPlaylist',
+	        value: function createPlaylist() {
+	            this.wrapModal(MODAL_CREATE_PL);
+	        }
+	    }, {
+	        key: 'loadPlaylist',
+	        value: function loadPlaylist() {
+	            this.wrapModal(MODAL_LOAD_PL);
+	        }
+	    }, {
+	        key: 'wrapModal',
+	        value: function wrapModal(type) {
+	            this.setState({
+	                modal: type
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this = this;
+	
+	            return _react2['default'].createElement(
+	                'div',
+	                { id: 'controls' },
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Button,
+	                    { onClick: this.createPlaylist },
+	                    'New Playlist'
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Button,
+	                    { onClick: this.loadPlaylist },
+	                    'Load Playlist'
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Modal,
+	                    { onHide: function () {
+	                            _this.setState({ modal: false });
+	                        }, show: !!this.state.modal, 'aria-labelledby': 'contained-modal-title-sm' },
+	                    _react2['default'].createElement(
+	                        _reactBootstrap.Modal.Header,
+	                        { closeButton: true },
+	                        _react2['default'].createElement(
+	                            _reactBootstrap.Modal.Title,
+	                            { id: 'contained-modal-title-sm' },
+	                            this.state.modal == MODAL_CREATE_PL ? "Create Playlist" : "Load Playlist"
+	                        )
+	                    ),
+	                    _react2['default'].createElement(
+	                        _reactBootstrap.Modal.Body,
+	                        null,
+	                        this.state.modal == MODAL_CREATE_PL ? _react2['default'].createElement(_userIndex.CreatePlaylist, { wrapModal: this.wrapModal }) : this.state.modal == MODAL_LOAD_PL ? _react2['default'].createElement(_userIndex.LoadPlaylist, { wrapModal: this.wrapModal }) : null
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return PlaylistsMenu;
+	})(_react.Component);
+	
+	exports['default'] = PlaylistsMenu;
+	module.exports = exports['default'];
+
+/***/ },
+/* 618 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _PlaylistsMenu = __webpack_require__(617);
+	
+	var _PlaylistsMenu2 = _interopRequireDefault(_PlaylistsMenu);
+	
+	var _PlaylistSongs = __webpack_require__(619);
+	
+	var _PlaylistSongs2 = _interopRequireDefault(_PlaylistSongs);
+	
+	var _reactRedux = __webpack_require__(206);
+	
+	var Playlists = (function (_Component) {
+	    _inherits(Playlists, _Component);
+	
+	    function Playlists() {
+	        _classCallCheck(this, _Playlists);
+	
+	        _get(Object.getPrototypeOf(_Playlists.prototype), 'constructor', this).apply(this, arguments);
+	    }
+	
+	    _createClass(Playlists, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                'div',
+	                null,
+	                _react2['default'].createElement(_PlaylistsMenu2['default'], null),
+	                this.props.playlistLoaded ? _react2['default'].createElement(_PlaylistSongs2['default'], null) : null
+	            );
+	        }
+	    }]);
+	
+	    var _Playlists = Playlists;
+	    Playlists = (0, _reactRedux.connect)(function (_ref) {
+	        var playlistLoaded = _ref.playlists.playlistLoaded;
+	        return { playlistLoaded: playlistLoaded };
+	    })(Playlists) || Playlists;
+	    return Playlists;
+	})(_react.Component);
+	
+	exports['default'] = Playlists;
+	module.exports = exports['default'];
+
+/***/ },
+/* 619 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var PlaylistSongs = (function (_Component) {
+	    _inherits(PlaylistSongs, _Component);
+	
+	    function PlaylistSongs() {
+	        _classCallCheck(this, PlaylistSongs);
+	
+	        _get(Object.getPrototypeOf(PlaylistSongs.prototype), 'constructor', this).apply(this, arguments);
+	    }
+	
+	    _createClass(PlaylistSongs, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                'h1',
+	                null,
+	                'Here songs of your playlist'
+	            );
+	        }
+	    }]);
+	
+	    return PlaylistSongs;
+	})(_react.Component);
+	
+	exports['default'] = PlaylistSongs;
 	module.exports = exports['default'];
 
 /***/ }

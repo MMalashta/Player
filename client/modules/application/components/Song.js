@@ -10,7 +10,8 @@ class Song extends Component {
         this.play = this.play.bind(this);
         this.pause = this.pause.bind(this);
         this.add = this.add.bind(this);
-        this.toggleHover = this.toggleHover.bind(this);
+        this.HoverEnter = this.HoverEnter.bind(this);
+        this.HoverOut = this.HoverOut.bind(this);
         this.wrapModal = this.wrapModal.bind(this);
         this.isPlaying = false;
         this.state = {
@@ -39,7 +40,7 @@ class Song extends Component {
     pause() {
         if (this.isPlaying) {
             this.refs.audio.pause();
-            this.refs.wrapper.style.background = "#26A69A";
+            this.refs.wrapper.style.background = "#EEEEEE";
             this.isPlaying = false;
         }
     }
@@ -48,21 +49,23 @@ class Song extends Component {
         this.wrapModal(MODAL_ADD_SONG);
     }
 
-    toggleHover() {
+    HoverEnter() {
         if (this.isPlaying) {
             return;
         }
 
-        this.setState({hover: !this.state.hover})
-        if (!this.state.hover) {
-            this.refs.wrapper.style.background = "#26A69A";
-        } else {
-            this.refs.wrapper.style.background = "white";
+        this.refs.wrapper.style.background = "#26A69A";
+    }
+
+    HoverOut() {
+        if (this.isPlaying) {
+            return;
         }
+        this.refs.wrapper.style.background = "#EEEEEE";
     }
 
     render() {
-        return <div ref="wrapper" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
+        return <div ref="wrapper" onMouseEnter={this.HoverEnter} onMouseLeave={this.HoverOut}>
             <audio src={this.props.song.url} ref="audio">
             </audio>
             <Button onClick={this.play} className="mdi-av-play-circle-fill" />

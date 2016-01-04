@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import {PLAYLIST_CREATED, PLAYLISTS_LOADED, PLAYLIST_TRACK_ADDED} from './../constants'
+import {PLAYLIST_CREATED, PLAYLISTS_LOADED, PLAYLIST_TRACK_ADDED, PLAYLIST_LOADED} from './../constants'
 
 export default function(state = {}, action) {
     switch(action.type) {
@@ -17,7 +17,7 @@ export default function(state = {}, action) {
             for(let i = 0, len = oldPlaylists.length; i < len; i++) {
                 if (oldPlaylists[i]._id === action.playlist) {
                     index = i;
-                    oldPlaylists[i].tracks.push(action.song);
+                    oldPlaylists[i].tracks.push(action.data);
                     break;
                 }
             }
@@ -26,6 +26,10 @@ export default function(state = {}, action) {
                 return state;
             }
             return Object.assign({}, state, {playlists: oldPlaylists});
+        }
+
+        case PLAYLIST_LOADED: {
+            return Object.assign({}, state, {playlistLoaded: true   });
         }
 
         default: {
