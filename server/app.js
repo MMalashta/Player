@@ -241,9 +241,18 @@ app.post('/api/1/pl/load', (req, res, next) => {
             });
         }
         if (pl && pl != null) {
-            return res.json({
-                success: true,
-                data: pl.tracks
+            Song.find({'_id': {$in: pl.tracks}}, (err, songs) => {
+                if (err) {
+                    return res.json({
+                        success: false,
+                        message: err.message
+                    });
+                }
+                return res.json({
+                    success: true,
+                    currentPlaylist: pl,
+                    playlistSongs: songs
+                });
             });
         }
     });

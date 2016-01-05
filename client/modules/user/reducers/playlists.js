@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux'
 import {PLAYLIST_CREATED, PLAYLISTS_LOADED, PLAYLIST_TRACK_ADDED, PLAYLIST_LOADED} from './../constants'
 
 export default function(state = {}, action) {
@@ -29,7 +28,7 @@ export default function(state = {}, action) {
         }
 
         case PLAYLIST_LOADED: {
-            return Object.assign({}, state, {playlistLoaded: true   });
+            return Object.assign({}, state, {playlistLoaded: true, currentPlaylist: action.currentPlaylist, playlistSongs: action.playlistSongs});
         }
 
         default: {

@@ -28,7 +28,7 @@ export default class Registration extends Component {
             email: email,
             password: password
         }));
-
+        this.props.onHide();
     }
 
     render() {

@@ -4,10 +4,10 @@ import {serialize} from '../../../utils/serialize'
 
 function playlistLoaded(response) {
     if (response.success) {
-        console.log(response.data);
         return {
             type: PLAYLIST_LOADED,
-            data: response.data
+            currentPlaylist: response.currentPlaylist,
+            playlistSongs: response.playlistSongs
         }
     } else {
         return {

@@ -16,7 +16,9 @@ class TrackList extends Component {
 
     render(){
         return <ListGroup>
-            {this.state.tracks ? this.state.tracks.tracks.map((song)=>{return <Song song={song}/>}) : null}
+            {this.props.playlist ? this.props.playlistSongs ? this.props.playlistSongs.map((song)=>
+            {return <Song song={song} playlist={true}/>}) : null
+                : this.state.tracks ? this.state.tracks.tracks.map((song)=>{return <Song song={song} />}) : null}
        </ListGroup>
     }
 }

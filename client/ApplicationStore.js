@@ -1,18 +1,14 @@
 import {createStore, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
+import {persistStore, autoRehydrate} from 'redux-persist'
 import reducers from './reducers'
 
 const createStoreWithMiddleware = applyMiddleware(
     thunk
 )(createStore);
 
-let store = createStoreWithMiddleware(reducers, {
-    auth: {},
-    tracks: [],
-    reg: [],
-    error: {},
-    playlists: []
-});
+const store = autoRehydrate()(createStoreWithMiddleware)(reducers);
+persistStore(store);
 
 export default store;
 

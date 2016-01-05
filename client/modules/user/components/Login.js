@@ -12,19 +12,12 @@ class Login extends Component {
         this.login = this.login.bind(this);
     }
 
-    componentWillReceiveProps(newProps){
-        console.log(this.props, newProps);
-        if (!this.props.error.visible && newProps.error.visible) {
-            this.refs.login.value = "";
-            this.refs.password.value = "";
-        }
-    }
-
     login() {
         dispatch(auth({
             username: this.refs.login.value,
             password: this.refs.password.value
         }));
+        this.props.onHide();
     }
 
     render() {

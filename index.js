@@ -1,3 +1,3 @@
 require("babel/register");
 var app = require('./server/app');
-app.listen(4000);
+app.listen(3000);

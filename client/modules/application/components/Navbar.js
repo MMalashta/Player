@@ -2,42 +2,41 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Navbar, Nav, NavItem, Modal, Button} from 'react-bootstrap'
 import {Registration, Login} from './../../user/index'
+import {dispatch} from '../../../ApplicationStore'
+import logOut from './../../user/actions/logout'
 
 const MODAL_REGISTER = 'MODAL_REGISTER';
 const MODAL_LOGIN = 'MODAL_LOGIN';
 
 @connect(({auth: {authenticated}}) => ({authenticated}))
-@connect(({reg: {registrated}}) => ({registrated}))
 class Navigation extends Component {
     constructor(...options) {
         super(...options);
-
+        this.logout = this.logout.bind(this);
+        this.onHide = this.onHide.bind(this);
         this.state = {
-            modal: false
+            modal: false,
+            onBtnClicked: false
         };
     }
 
     wrapModal(type) {
         this.setState({
-            modal: type
-        })
+            modal: type,
+            onBtnClicked: true
+        });
     }
 
-    componentWillReceiveProps(newProps) {
-
-        if (!this.props.authenticated && newProps.authenticated) {
-            alert('You\'re logged in');
-        }
-
-        if (!this.props.registrated && newProps.registrated) {
-            alert('You\'re registrated in');
-            this.setState({modal:false});
-        }
+    logout(event) {
+        event.preventDefault();
+        dispatch(logOut());
     }
 
-
-    register(data) {
-        console.log("Navigation", data);
+    onHide() {
+        this.setState({
+            modal:false,
+            onBtnClicked:false
+        });
     }
 
     render() {
@@ -51,16 +50,17 @@ class Navigation extends Component {
                         <NavItem eventKey={1} onClick={this.wrapModal.bind(this, MODAL_REGISTER)}>Register</NavItem>
                         <NavItem eventKey={2} onClick={this.wrapModal.bind(this, MODAL_LOGIN)}>Login</NavItem>
                     </Nav>
-                ) : null}
+                ) : <Nav pullRight>
+                        <NavItem eventKey={1} onClick={this.logout}>Logout</NavItem>
+                    </Nav>}
 
-                <Modal onHide={() => {this.setState({modal:false})}} show={!!this.state.modal &&
-                    !this.props.authenticated} aria-labelledby="contained-modal-title-sm">
+                <Modal onHide={this.onHide} show={!!this.state.modal && this.state.onBtnClicked} aria-labelledby="contained-modal-title-sm">
 
                     <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-sm">{this.state.modal == MODAL_REGISTER ? "Registation" : "Login "}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {this.state.modal == MODAL_REGISTER ? <Registration /> : <Login />}
+                        {this.state.modal == MODAL_REGISTER ? <Registration onHide={this.onHide}/> : <Login onHide={this.onHide}/>}
                     </Modal.Body>
                 </Modal>
             </Navbar>

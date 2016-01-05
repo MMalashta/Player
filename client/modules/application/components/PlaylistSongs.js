@@ -1,10 +1,16 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import TrackList from './TrackList'
 
+@connect(({playlists: {currentPlaylist, playlistSongs}}) => ({currentPlaylist, playlistSongs}))
 class PlaylistSongs extends Component {
     render(){
-        return <h1>
-            Here songs of your playlist
-        </h1>
+        return (<div>
+            <h1>
+                {this.props.currentPlaylist.title}
+            </h1>
+            <TrackList playlist={true} playlistSongs={this.props.playlistSongs} />
+        </div>);
     }
 }
 

@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux'
 import {TRACKS_LOADED} from './../constants'
 
 export default function(state = {}, action) {

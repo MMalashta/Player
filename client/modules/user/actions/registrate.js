@@ -5,6 +5,7 @@ import createAsyncAction from 'redux-promise'
 
 function userRegistrated(response) {
     if (response.success) {
+        alert('You\'re registrated in');
         return {
             type: REGISTRATE_USER
         }

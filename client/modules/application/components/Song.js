@@ -10,6 +10,7 @@ class Song extends Component {
         this.play = this.play.bind(this);
         this.pause = this.pause.bind(this);
         this.add = this.add.bind(this);
+        this.remove = this.remove.bind(this);
         this.HoverEnter = this.HoverEnter.bind(this);
         this.HoverOut = this.HoverOut.bind(this);
         this.wrapModal = this.wrapModal.bind(this);
@@ -49,6 +50,9 @@ class Song extends Component {
         this.wrapModal(MODAL_ADD_SONG);
     }
 
+    remove(){
+
+    }
     HoverEnter() {
         if (this.isPlaying) {
             return;
@@ -70,7 +74,8 @@ class Song extends Component {
             </audio>
             <Button onClick={this.play} className="mdi-av-play-circle-fill" />
             <Button onClick={this.pause} className="mdi-av-pause-circle-fill" />
-            <Button onClick={this.add} className="mdi-action-favorite" />
+            {this.props.playlist ? <Button onClick={this.remove} className="mdi-action-highlight-remove" />
+                : <Button onClick={this.add} className="mdi-action-favorite" />}
             <span>{this.props.song.title}</span>
             <span style={{color: 'gray'}}> - {this.props.song.artist}</span>
             <Modal onHide={() => {this.setState({modal:false})}} show={!!this.state.modal} aria-labelledby="contained-modal-title-sm">

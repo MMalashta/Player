@@ -7,8 +7,9 @@ import {dispatch} from '../../../ApplicationStore'
 
 function userAuthenticated(response) {
     if(response.success) {
+        alert('You\'re logged in');
         dispatch(loadAll({
-            userID: response.data._id,
+            userID: response.data._id
         }));
         dispatch(loadTracks());
         return {
@@ -19,7 +20,7 @@ function userAuthenticated(response) {
     } else {
         return {
             type: SHOW_ERROR,
-            message: response.message,
+            message: response.message
         }
     }
 }
