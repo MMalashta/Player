@@ -27452,6 +27452,8 @@
 	exports.PLAYLIST_TRACK_REMOVED = PLAYLIST_TRACK_REMOVED;
 	var PLAYLIST_LOADED = "PLAYLIST_LOADED";
 	exports.PLAYLIST_LOADED = PLAYLIST_LOADED;
+	var PLAYLIST_REMOVED = "PLAYLIST_REMOVED";
+	exports.PLAYLIST_REMOVED = PLAYLIST_REMOVED;
 
 /***/ },
 /* 248 */
@@ -27583,6 +27585,11 @@
 	                return Object.assign({}, state, { playlists: state.playlists.concat(action.data) });
 	            }
 	
+	        case _constants.PLAYLIST_REMOVED:
+	            {
+	                return Object.assign({}, state, { playlists: action.data });
+	            }
+	
 	        case _constants.PLAYLISTS_LOADED:
 	            {
 	                return Object.assign({}, state, { playlists: action.playlists });
@@ -27630,6 +27637,11 @@
 	        case _constants.PLAYLIST_LOADED:
 	            {
 	                return Object.assign({}, state, { playlistLoaded: true, currentPlaylist: action.currentPlaylist, playlistSongs: action.playlistSongs });
+	            }
+	
+	        case _constants.LOGOUT_USER:
+	            {
+	                return Object.assign({}, state, { playlistLoaded: false });
 	            }
 	
 	        default:
@@ -28113,7 +28125,7 @@
 	
 	exports.Layout = _interopRequire(_Layout);
 	
-	var _Player = __webpack_require__(527);
+	var _Player = __webpack_require__(529);
 	
 	exports.Player = _interopRequire(_Player);
 
@@ -28203,7 +28215,7 @@
 	
 	var _componentsNavbar2 = _interopRequireDefault(_componentsNavbar);
 	
-	var _Player = __webpack_require__(527);
+	var _Player = __webpack_require__(529);
 	
 	var _Player2 = _interopRequireDefault(_Player);
 	
@@ -28355,7 +28367,7 @@
 	
 	var _ApplicationStore = __webpack_require__(224);
 	
-	var _userActionsLogout = __webpack_require__(526);
+	var _userActionsLogout = __webpack_require__(528);
 	
 	var _userActionsLogout2 = _interopRequireDefault(_userActionsLogout);
 	
@@ -45347,6 +45359,10 @@
 	var _LoadPlaylist = __webpack_require__(525);
 	
 	exports.LoadPlaylist = _interopRequire(_LoadPlaylist);
+	
+	var _RemovePlaylist = __webpack_require__(526);
+	
+	exports.RemovePlaylist = _interopRequire(_RemovePlaylist);
 
 /***/ },
 /* 509 */
@@ -45915,17 +45931,21 @@
 	        key: 'render',
 	        value: function render() {
 	            return _react2['default'].createElement(
-	                'div',
+	                _reactBootstrap.Row,
 	                null,
 	                _react2['default'].createElement(
-	                    'div',
-	                    { className: 'form-group' },
-	                    _react2['default'].createElement('input', { className: 'form-control', ref: 'title', placeholder: 'Title', type: 'text' })
+	                    _reactBootstrap.Col,
+	                    { md: '4' },
+	                    _react2['default'].createElement('input', { style: { margin: '10px' }, className: 'form-control', ref: 'title', placeholder: 'Title', type: 'text' })
 	                ),
 	                _react2['default'].createElement(
-	                    _reactBootstrap.Button,
-	                    { onClick: this.create, bsStyle: 'primary', active: true },
-	                    'Create'
+	                    _reactBootstrap.Col,
+	                    { md: '2' },
+	                    _react2['default'].createElement(
+	                        _reactBootstrap.Button,
+	                        { onClick: this.create, bsStyle: 'primary', active: true },
+	                        'Create'
+	                    )
 	                )
 	            );
 	        }
@@ -45965,7 +45985,7 @@
 	var _reduxPromise2 = _interopRequireDefault(_reduxPromise);
 	
 	function playlistCreated(response) {
-	    if (("here", response.success)) {
+	    if (response.success) {
 	        console.log(response.data);
 	        return {
 	            type: _constants.PLAYLIST_CREATED,
@@ -46457,6 +46477,200 @@
 	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactBootstrap = __webpack_require__(265);
+	
+	var _reactRedux = __webpack_require__(206);
+	
+	var _ApplicationStore = __webpack_require__(224);
+	
+	var _ApplicationStore2 = _interopRequireDefault(_ApplicationStore);
+	
+	var _applicationComponentsCheckBox = __webpack_require__(527);
+	
+	var _applicationComponentsCheckBox2 = _interopRequireDefault(_applicationComponentsCheckBox);
+	
+	var _actionsRemovePlaylist = __webpack_require__(635);
+	
+	var RemovePlaylist = (function (_Component) {
+	    _inherits(RemovePlaylist, _Component);
+	
+	    function RemovePlaylist() {
+	        _classCallCheck(this, _RemovePlaylist);
+	
+	        _get(Object.getPrototypeOf(_RemovePlaylist.prototype), 'constructor', this).call(this);
+	        this.remove = this.remove.bind(this);
+	    }
+	
+	    _createClass(RemovePlaylist, [{
+	        key: 'remove',
+	        value: function remove() {
+	            var _this = this;
+	
+	            var result = {
+	                checkedPlaylists: []
+	            };
+	
+	            this.props.playlists.playlists.forEach(function (playlsit) {
+	                if (_this.refs[playlsit.title].getChecked()) {
+	                    result.checkedPlaylists.push(playlsit._id);
+	                }
+	            });
+	            console.log(result.checkedPlaylists);
+	            (0, _ApplicationStore.dispatch)((0, _actionsRemovePlaylist.removePl)({
+	                playlistIDs: result,
+	                userID: this.props.playlists.playlists[0].owner
+	            }));
+	            this.props.wrapModal(null);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                'div',
+	                null,
+	                _react2['default'].createElement(
+	                    'form',
+	                    null,
+	                    this.props.playlists.playlists.map(function (pl, index) {
+	                        return _react2['default'].createElement(
+	                            'div',
+	                            null,
+	                            _react2['default'].createElement('input', { type: 'hidden', name: pl.title, value: ++index }),
+	                            _react2['default'].createElement(_applicationComponentsCheckBox2['default'], { ref: pl.title, label: pl.title, key: index, name: pl.title, value: ++index })
+	                        );
+	                    })
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Button,
+	                    { onClick: this.remove, bsStyle: 'primary', active: true },
+	                    'Remove'
+	                )
+	            );
+	        }
+	    }]);
+	
+	    var _RemovePlaylist = RemovePlaylist;
+	    RemovePlaylist = (0, _reactRedux.connect)(function (playlists) {
+	        return playlists;
+	    })(RemovePlaylist) || RemovePlaylist;
+	    return RemovePlaylist;
+	})(_react.Component);
+	
+	exports['default'] = RemovePlaylist;
+	module.exports = exports['default'];
+
+/***/ },
+/* 527 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var CheckBox = (function (_Component) {
+	    _inherits(CheckBox, _Component);
+	
+	    function CheckBox() {
+	        _classCallCheck(this, CheckBox);
+	
+	        _get(Object.getPrototypeOf(CheckBox.prototype), 'constructor', this).apply(this, arguments);
+	    }
+	
+	    _createClass(CheckBox, [{
+	        key: 'getInputDOMNode',
+	        value: function getInputDOMNode() {
+	            return this.refs.input.getDOMNode();
+	        }
+	    }, {
+	        key: 'getChecked',
+	        value: function getChecked() {
+	            return this.getInputDOMNode().checked;
+	        }
+	    }, {
+	        key: 'renderLabel',
+	        value: function renderLabel() {
+	            var input = this.renderInput();
+	            return _react2['default'].createElement(
+	                'label',
+	                null,
+	                input,
+	                ' ',
+	                this.props.label
+	            );
+	        }
+	    }, {
+	        key: 'renderInput',
+	        value: function renderInput() {
+	            return [_react2['default'].createElement('input', _extends({}, this.props, { type: 'checkbox', name: this.props.name, ref: 'input', key: 'input' })), _react2['default'].createElement(
+	                'span',
+	                { className: 'checkbox-material' },
+	                _react2['default'].createElement('span', { className: 'ripple' }),
+	                _react2['default'].createElement('span', { className: 'check' })
+	            )];
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var className = 'checkbox';
+	            if (this.props.groupClassName) {
+	                className += ' ' + this.props.groupClassName;
+	            }
+	            return _react2['default'].createElement(
+	                'div',
+	                _extends({}, this.props, { className: className }),
+	                this.renderLabel()
+	            );
+	        }
+	    }]);
+	
+	    return CheckBox;
+	})(_react.Component);
+	
+	exports['default'] = CheckBox;
+	module.exports = exports['default'];
+
+/***/ },
+/* 528 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
 	exports['default'] = logOut;
 	
 	var _constants = __webpack_require__(247);
@@ -46471,7 +46685,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 527 */
+/* 529 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46498,7 +46712,7 @@
 	
 	var _ApplicationStore2 = _interopRequireDefault(_ApplicationStore);
 	
-	var _componentsTabsInstance = __webpack_require__(528);
+	var _componentsTabsInstance = __webpack_require__(530);
 	
 	var _componentsTabsInstance2 = _interopRequireDefault(_componentsTabsInstance);
 	
@@ -46529,7 +46743,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 528 */
+/* 530 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46554,11 +46768,11 @@
 	
 	var _reactBootstrap = __webpack_require__(265);
 	
-	var _componentsTrackList = __webpack_require__(529);
+	var _componentsTrackList = __webpack_require__(531);
 	
 	var _componentsTrackList2 = _interopRequireDefault(_componentsTrackList);
 	
-	var _Playlists = __webpack_require__(531);
+	var _Playlists = __webpack_require__(533);
 	
 	var _Playlists2 = _interopRequireDefault(_Playlists);
 	
@@ -46633,7 +46847,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 529 */
+/* 531 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46658,7 +46872,7 @@
 	
 	var _reactBootstrap = __webpack_require__(265);
 	
-	var _Song = __webpack_require__(530);
+	var _Song = __webpack_require__(532);
 	
 	var _Song2 = _interopRequireDefault(_Song);
 	
@@ -46708,7 +46922,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 530 */
+/* 532 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46869,7 +47083,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 531 */
+/* 533 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46892,11 +47106,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _PlaylistsMenu = __webpack_require__(532);
+	var _PlaylistsMenu = __webpack_require__(534);
 	
 	var _PlaylistsMenu2 = _interopRequireDefault(_PlaylistsMenu);
 	
-	var _PlaylistSongs = __webpack_require__(533);
+	var _PlaylistSongs = __webpack_require__(535);
 	
 	var _PlaylistSongs2 = _interopRequireDefault(_PlaylistSongs);
 	
@@ -46935,7 +47149,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 532 */
+/* 534 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46964,6 +47178,7 @@
 	
 	var MODAL_CREATE_PL = 'MODAL_CREATE_PL';
 	var MODAL_LOAD_PL = "MODAL_LOAD_PL";
+	var MODAL_REMOVE_PL = "MODAL_REMOVE_PL";
 	
 	var PlaylistsMenu = (function (_Component) {
 	    _inherits(PlaylistsMenu, _Component);
@@ -46975,22 +47190,10 @@
 	        this.state = {
 	            modal: false
 	        };
-	        this.createPlaylist = this.createPlaylist.bind(this);
-	        this.loadPlaylist = this.loadPlaylist.bind(this);
 	        this.wrapModal = this.wrapModal.bind(this);
 	    }
 	
 	    _createClass(PlaylistsMenu, [{
-	        key: 'createPlaylist',
-	        value: function createPlaylist() {
-	            this.wrapModal(MODAL_CREATE_PL);
-	        }
-	    }, {
-	        key: 'loadPlaylist',
-	        value: function loadPlaylist() {
-	            this.wrapModal(MODAL_LOAD_PL);
-	        }
-	    }, {
 	        key: 'wrapModal',
 	        value: function wrapModal(type) {
 	            this.setState({
@@ -47007,32 +47210,65 @@
 	                { id: 'controls' },
 	                _react2['default'].createElement(
 	                    _reactBootstrap.Button,
-	                    { onClick: this.createPlaylist },
+	                    { className: 'btn btn-flat btn-primary', onClick: this.wrapModal.bind(this, MODAL_CREATE_PL) },
 	                    'New Playlist'
 	                ),
 	                _react2['default'].createElement(
 	                    _reactBootstrap.Button,
-	                    { onClick: this.loadPlaylist },
+	                    { className: 'btn btn-flat btn-primary', onClick: this.wrapModal.bind(this, MODAL_LOAD_PL) },
 	                    'Load Playlist'
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Button,
+	                    { className: 'btn btn-flat btn-primary', onClick: this.wrapModal.bind(this, MODAL_REMOVE_PL) },
+	                    'Remove'
 	                ),
 	                _react2['default'].createElement(
 	                    _reactBootstrap.Modal,
 	                    { onHide: function () {
 	                            _this.setState({ modal: false });
-	                        }, show: !!this.state.modal, 'aria-labelledby': 'contained-modal-title-sm' },
+	                        },
+	                        show: !!this.state.modal, 'aria-labelledby': 'contained-modal-title-sm' },
 	                    _react2['default'].createElement(
 	                        _reactBootstrap.Modal.Header,
 	                        { closeButton: true },
 	                        _react2['default'].createElement(
 	                            _reactBootstrap.Modal.Title,
 	                            { id: 'contained-modal-title-sm' },
-	                            this.state.modal == MODAL_CREATE_PL ? "Create Playlist" : "Load Playlist"
+	                            (function () {
+	                                switch (_this.state.modal) {
+	                                    case MODAL_CREATE_PL:
+	                                        return "Create Playlist";
+	
+	                                    case MODAL_LOAD_PL:
+	                                        return "Load Playlist";
+	
+	                                    case MODAL_REMOVE_PL:
+	                                        return "Choose Playlist To Remove";
+	
+	                                    default:
+	                                        return "";
+	                                }
+	                            })()
 	                        )
 	                    ),
 	                    _react2['default'].createElement(
 	                        _reactBootstrap.Modal.Body,
 	                        null,
-	                        this.state.modal == MODAL_CREATE_PL ? _react2['default'].createElement(_userIndex.CreatePlaylist, { wrapModal: this.wrapModal }) : this.state.modal == MODAL_LOAD_PL ? _react2['default'].createElement(_userIndex.LoadPlaylist, { wrapModal: this.wrapModal }) : null
+	                        (function () {
+	                            switch (_this.state.modal) {
+	                                case MODAL_CREATE_PL:
+	                                    return _react2['default'].createElement(_userIndex.CreatePlaylist, { wrapModal: _this.wrapModal });
+	
+	                                case MODAL_LOAD_PL:
+	                                    return _react2['default'].createElement(_userIndex.LoadPlaylist, { wrapModal: _this.wrapModal });
+	
+	                                case MODAL_REMOVE_PL:
+	                                    return _react2['default'].createElement(_userIndex.RemovePlaylist, { wrapModal: _this.wrapModal });
+	                                default:
+	                                    return null;
+	                            }
+	                        })()
 	                    )
 	                )
 	            );
@@ -47046,7 +47282,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 533 */
+/* 535 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47071,7 +47307,7 @@
 	
 	var _reactRedux = __webpack_require__(206);
 	
-	var _TrackList = __webpack_require__(529);
+	var _TrackList = __webpack_require__(531);
 	
 	var _TrackList2 = _interopRequireDefault(_TrackList);
 	
@@ -47112,6 +47348,155 @@
 	
 	exports['default'] = PlaylistSongs;
 	module.exports = exports['default'];
+
+/***/ },
+/* 536 */,
+/* 537 */,
+/* 538 */,
+/* 539 */,
+/* 540 */,
+/* 541 */,
+/* 542 */,
+/* 543 */,
+/* 544 */,
+/* 545 */,
+/* 546 */,
+/* 547 */,
+/* 548 */,
+/* 549 */,
+/* 550 */,
+/* 551 */,
+/* 552 */,
+/* 553 */,
+/* 554 */,
+/* 555 */,
+/* 556 */,
+/* 557 */,
+/* 558 */,
+/* 559 */,
+/* 560 */,
+/* 561 */,
+/* 562 */,
+/* 563 */,
+/* 564 */,
+/* 565 */,
+/* 566 */,
+/* 567 */,
+/* 568 */,
+/* 569 */,
+/* 570 */,
+/* 571 */,
+/* 572 */,
+/* 573 */,
+/* 574 */,
+/* 575 */,
+/* 576 */,
+/* 577 */,
+/* 578 */,
+/* 579 */,
+/* 580 */,
+/* 581 */,
+/* 582 */,
+/* 583 */,
+/* 584 */,
+/* 585 */,
+/* 586 */,
+/* 587 */,
+/* 588 */,
+/* 589 */,
+/* 590 */,
+/* 591 */,
+/* 592 */,
+/* 593 */,
+/* 594 */,
+/* 595 */,
+/* 596 */,
+/* 597 */,
+/* 598 */,
+/* 599 */,
+/* 600 */,
+/* 601 */,
+/* 602 */,
+/* 603 */,
+/* 604 */,
+/* 605 */,
+/* 606 */,
+/* 607 */,
+/* 608 */,
+/* 609 */,
+/* 610 */,
+/* 611 */,
+/* 612 */,
+/* 613 */,
+/* 614 */,
+/* 615 */,
+/* 616 */,
+/* 617 */,
+/* 618 */,
+/* 619 */,
+/* 620 */,
+/* 621 */,
+/* 622 */,
+/* 623 */,
+/* 624 */,
+/* 625 */,
+/* 626 */,
+/* 627 */,
+/* 628 */,
+/* 629 */,
+/* 630 */,
+/* 631 */,
+/* 632 */,
+/* 633 */,
+/* 634 */,
+/* 635 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _constants = __webpack_require__(247);
+	
+	var _applicationConstants = __webpack_require__(251);
+	
+	var _utilsSerialize = __webpack_require__(511);
+	
+	var _reduxPromise = __webpack_require__(512);
+	
+	var _reduxPromise2 = _interopRequireDefault(_reduxPromise);
+	
+	function playlistRemoved(response) {
+	    if (response.success) {
+	        console.log("REMOVE", response);
+	        return {
+	            type: _constants.PLAYLIST_REMOVED,
+	            data: response.data
+	        };
+	    } else {
+	        return {
+	            type: _applicationConstants.SHOW_ERROR,
+	            message: response.message
+	        };
+	    }
+	}
+	
+	var removePl = function removePl(data) {
+	    return function (dispatch) {
+	        return fetch('/api/1/pl/remove', { headers: {
+	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+	            }, method: 'POST', body: (0, _utilsSerialize.serialize)(data) }).then(function (response) {
+	            return response.json();
+	        }).then(function (data) {
+	            return dispatch(playlistRemoved(data));
+	        });
+	    };
+	};
+	exports.removePl = removePl;
 
 /***/ }
 /******/ ]);

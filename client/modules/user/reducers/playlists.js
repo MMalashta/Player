@@ -1,9 +1,14 @@
-import {PLAYLIST_CREATED, PLAYLISTS_LOADED, PLAYLIST_TRACK_ADDED, PLAYLIST_LOADED, PLAYLIST_TRACK_REMOVED} from './../constants'
+import {PLAYLIST_CREATED, PLAYLISTS_LOADED, PLAYLIST_TRACK_ADDED, PLAYLIST_LOADED, PLAYLIST_TRACK_REMOVED,
+    PLAYLIST_REMOVED, LOGOUT_USER} from './../constants'
 
 export default function(state = {}, action) {
     switch(action.type) {
         case PLAYLIST_CREATED: {
             return Object.assign({}, state, {playlists: state.playlists.concat(action.data)});
+        }
+
+        case PLAYLIST_REMOVED:{
+            return Object.assign({}, state, {playlists: action.data});
         }
 
         case PLAYLISTS_LOADED: {
@@ -49,6 +54,10 @@ export default function(state = {}, action) {
 
         case PLAYLIST_LOADED: {
             return Object.assign({}, state, {playlistLoaded: true, currentPlaylist: action.currentPlaylist, playlistSongs: action.playlistSongs});
+        }
+
+        case LOGOUT_USER: {
+            return Object.assign({}, state, {playlistLoaded: false});
         }
 
         default: {

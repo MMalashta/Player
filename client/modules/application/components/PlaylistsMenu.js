@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
 import {Button, Modal} from 'react-bootstrap'
-import {CreatePlaylist, LoadPlaylist} from './../../user/index'
+import {CreatePlaylist, LoadPlaylist, RemovePlaylist} from './../../user/index'
 
 const MODAL_CREATE_PL = 'MODAL_CREATE_PL';
 const MODAL_LOAD_PL = "MODAL_LOAD_PL";
+const MODAL_REMOVE_PL = "MODAL_REMOVE_PL";
 
 class PlaylistsMenu extends Component {
     constructor() {
@@ -11,17 +12,7 @@ class PlaylistsMenu extends Component {
         this.state = {
             modal: false
         };
-        this.createPlaylist = this.createPlaylist.bind(this);
-        this.loadPlaylist = this.loadPlaylist.bind(this);
         this.wrapModal = this.wrapModal.bind(this);
-    }
-
-    createPlaylist() {
-        this.wrapModal(MODAL_CREATE_PL);
-    }
-
-    loadPlaylist() {
-        this.wrapModal(MODAL_LOAD_PL);
     }
 
     wrapModal(type) {
@@ -29,18 +20,45 @@ class PlaylistsMenu extends Component {
             modal: type
         })
     }
+
     render() {
         return <div id="controls">
-            <Button onClick={this.createPlaylist}>New Playlist</Button>
-            <Button onClick={this.loadPlaylist}>Load Playlist</Button>
-            <Modal onHide={() => {this.setState({modal:false})}} show={!!this.state.modal} aria-labelledby="contained-modal-title-sm">
-
+            <Button className="btn btn-flat btn-primary" onClick={this.wrapModal.bind(this, MODAL_CREATE_PL)}>New Playlist</Button>
+            <Button className="btn btn-flat btn-primary" onClick={this.wrapModal.bind(this, MODAL_LOAD_PL)}>Load Playlist</Button>
+            <Button className="btn btn-flat btn-primary" onClick={this.wrapModal.bind(this, MODAL_REMOVE_PL)}>Remove</Button>
+            <Modal onHide={() => {this.setState({modal:false})}}
+                   show={!!this.state.modal} aria-labelledby="contained-modal-title-sm">
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-sm">{this.state.modal == MODAL_CREATE_PL ? "Create Playlist" : "Load Playlist"}</Modal.Title>
+                    <Modal.Title id="contained-modal-title-sm">{(() => {
+                        switch(this.state.modal){
+                            case MODAL_CREATE_PL:
+                                return "Create Playlist";
+
+                            case MODAL_LOAD_PL:
+                                return "Load Playlist";
+
+                            case MODAL_REMOVE_PL:
+                                return "Choose Playlist To Remove";
+
+                            default:
+                               return "";
+                        }
+                    })()}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    {this.state.modal == MODAL_CREATE_PL ? <CreatePlaylist wrapModal={this.wrapModal}/> :
-                        this.state.modal == MODAL_LOAD_PL ? <LoadPlaylist wrapModal={this.wrapModal}/> : null}
+                <Modal.Body>{(() => {
+                        switch(this.state.modal){
+                            case MODAL_CREATE_PL:
+                                return <CreatePlaylist wrapModal={this.wrapModal}/>;
+
+                            case MODAL_LOAD_PL:
+                                return <LoadPlaylist wrapModal={this.wrapModal}/>;
+
+                            case MODAL_REMOVE_PL:
+                                return <RemovePlaylist wrapModal={this.wrapModal}/>;
+                            default:
+                                return null;
+                        }
+                    })()}
                 </Modal.Body>
             </Modal>
         </div>
