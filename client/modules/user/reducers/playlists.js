@@ -1,4 +1,4 @@
-import {PLAYLIST_CREATED, PLAYLISTS_LOADED, PLAYLIST_TRACK_ADDED, PLAYLIST_LOADED} from './../constants'
+import {PLAYLIST_CREATED, PLAYLISTS_LOADED, PLAYLIST_TRACK_ADDED, PLAYLIST_LOADED, PLAYLIST_TRACK_REMOVED} from './../constants'
 
 export default function(state = {}, action) {
     switch(action.type) {
@@ -25,6 +25,26 @@ export default function(state = {}, action) {
                 return state;
             }
             return Object.assign({}, state, {playlists: oldPlaylists});
+        }
+
+        case PLAYLIST_TRACK_REMOVED: {
+            let oldPlaylists = state.playlists,
+                playlist = action.playlist,
+                index = -1;
+
+            for(let i = 0, len = oldPlaylists.length; i < len; i++) {
+                if (oldPlaylists[i]._id === playlist._id) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index === -1) {
+                return state;
+            } else {
+                oldPlaylists.splice(index, 1, playlist);
+            }
+            return Object.assign({}, state, {playlists: oldPlaylists, currentPlaylist: playlist});
         }
 
         case PLAYLIST_LOADED: {

@@ -3,7 +3,6 @@ import {SHOW_ERROR} from './../../application/constants'
 import {serialize} from '../../../utils/serialize'
 
 function trackAdded(response) {
-    console.log(response);
     if (response.success) {
         return {
             type: PLAYLIST_TRACK_ADDED,

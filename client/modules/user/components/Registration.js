@@ -46,7 +46,7 @@ export default class Registration extends Component {
                 <div className="form-group">
                     <input className="form-control" ref="confirmation" placeholder="Confirm Password" type="password"/>
                 </div>
-                <Button onClick={this.register}>Register</Button>
+                <Button onClick={this.register} bsStyle="primary" active>Register</Button>
             </div>
         );
     }

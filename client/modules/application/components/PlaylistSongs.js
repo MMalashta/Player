@@ -9,7 +9,7 @@ class PlaylistSongs extends Component {
             <h1>
                 {this.props.currentPlaylist.title}
             </h1>
-            <TrackList playlist={true} playlistSongs={this.props.playlistSongs} />
+            <TrackList playlist={this.props.currentPlaylist.title} playlistSongs={this.props.playlistSongs} />
         </div>);
     }
 }

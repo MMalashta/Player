@@ -232,6 +232,41 @@ app.post('/api/1/pl/addSong', (req, res, next) => {
     });
 });
 
+app.post('/api/1/pl/removeSong', (req, res, next) => {
+    Playlist.findOne({'_id' : req.body.playlistID}, (err, pl) => {
+        if (err) {
+            return res.json({
+                success: false,
+                message: err.message
+            });
+        }
+        if (pl && pl != null) {
+            let index = pl.tracks.indexOf(req.body.songID);
+            if (index === -1) {
+                return res.json({
+                    success: false,
+                    message: "can't find this song in playlist"
+                });
+            } else {
+                pl.tracks.splice(index, 1);
+                pl.modified = new Date();
+                pl.save(function (err) {
+                    if (err) {
+                        return res.json({
+                            success: false,
+                            message: err.message
+                        });
+                    }
+                    return res.json({
+                        success: true,
+                        playlist: pl
+                    });
+                });
+            }
+        }
+    });
+});
+
 app.post('/api/1/pl/load', (req, res, next) => {
     Playlist.findOne({"title": req.body.playlist, "owner": req.body.owner}, (err, pl) => {
         if (err) {

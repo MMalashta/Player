@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
 import {Button, Modal} from 'react-bootstrap'
-import {AddSong} from '../../user/components/index'
+import {AddSong, RemoveSong} from '../../user/components/index'
 
 const MODAL_ADD_SONG = 'MODAL_ADD_SONG';
+const MODAL_REMOVE_SONG = 'MODAL_REMOVE_SONG';
 
 class Song extends Component {
     constructor() {
@@ -51,8 +52,9 @@ class Song extends Component {
     }
 
     remove(){
-
+        this.wrapModal(MODAL_REMOVE_SONG);
     }
+
     HoverEnter() {
         if (this.isPlaying) {
             return;
@@ -81,10 +83,15 @@ class Song extends Component {
             <Modal onHide={() => {this.setState({modal:false})}} show={!!this.state.modal} aria-labelledby="contained-modal-title-sm">
 
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-sm">Add Song To</Modal.Title>
+                    <Modal.Title id="contained-modal-title-sm">{this.state.modal == MODAL_ADD_SONG ? "Add Song To" :
+                        this.state.modal == MODAL_REMOVE_SONG ? "Do you want remove " + this.props.song.title +
+                        " from " + this.props.playlist : null}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {this.state.modal == MODAL_ADD_SONG ? <AddSong wrapModal={this.wrapModal} song={this.props.song}/> : null}
+                    {this.state.modal == MODAL_ADD_SONG ? <AddSong wrapModal={this.wrapModal} song={this.props.song}/> :
+                     this.state.modal == MODAL_REMOVE_SONG ? <RemoveSong wrapModal={this.wrapModal} song={this.props.song}/> :
+                     null
+                    }
                 </Modal.Body>
             </Modal>
         </div>

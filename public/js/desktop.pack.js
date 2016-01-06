@@ -27448,6 +27448,8 @@
 	exports.PLAYLISTS_LOADED = PLAYLISTS_LOADED;
 	var PLAYLIST_TRACK_ADDED = "PLAYLIST_TRACK_ADDED";
 	exports.PLAYLIST_TRACK_ADDED = PLAYLIST_TRACK_ADDED;
+	var PLAYLIST_TRACK_REMOVED = "PLAYLIST_TRACK_REMOVED";
+	exports.PLAYLIST_TRACK_REMOVED = PLAYLIST_TRACK_REMOVED;
 	var PLAYLIST_LOADED = "PLAYLIST_LOADED";
 	exports.PLAYLIST_LOADED = PLAYLIST_LOADED;
 
@@ -27602,6 +27604,27 @@
 	                    return state;
 	                }
 	                return Object.assign({}, state, { playlists: oldPlaylists });
+	            }
+	
+	        case _constants.PLAYLIST_TRACK_REMOVED:
+	            {
+	                var oldPlaylists = state.playlists,
+	                    playlist = action.playlist,
+	                    index = -1;
+	
+	                for (var i = 0, len = oldPlaylists.length; i < len; i++) {
+	                    if (oldPlaylists[i]._id === playlist._id) {
+	                        index = i;
+	                        break;
+	                    }
+	                }
+	
+	                if (index === -1) {
+	                    return state;
+	                } else {
+	                    oldPlaylists.splice(index, 1, playlist);
+	                }
+	                return Object.assign({}, state, { playlists: oldPlaylists, currentPlaylist: playlist });
 	            }
 	
 	        case _constants.PLAYLIST_LOADED:
@@ -28090,7 +28113,7 @@
 	
 	exports.Layout = _interopRequire(_Layout);
 	
-	var _Player = __webpack_require__(525);
+	var _Player = __webpack_require__(527);
 	
 	exports.Player = _interopRequire(_Player);
 
@@ -28180,7 +28203,7 @@
 	
 	var _componentsNavbar2 = _interopRequireDefault(_componentsNavbar);
 	
-	var _Player = __webpack_require__(525);
+	var _Player = __webpack_require__(527);
 	
 	var _Player2 = _interopRequireDefault(_Player);
 	
@@ -28332,7 +28355,7 @@
 	
 	var _ApplicationStore = __webpack_require__(224);
 	
-	var _userActionsLogout = __webpack_require__(524);
+	var _userActionsLogout = __webpack_require__(526);
 	
 	var _userActionsLogout2 = _interopRequireDefault(_userActionsLogout);
 	
@@ -45317,7 +45340,11 @@
 	
 	exports.AddSong = _interopRequire(_AddSong);
 	
-	var _LoadPlaylist = __webpack_require__(522);
+	var _RemoveSong = __webpack_require__(522);
+	
+	exports.RemoveSong = _interopRequire(_RemoveSong);
+	
+	var _LoadPlaylist = __webpack_require__(525);
 	
 	exports.LoadPlaylist = _interopRequire(_LoadPlaylist);
 
@@ -45414,7 +45441,7 @@
 	                ),
 	                _react2['default'].createElement(
 	                    _reactBootstrap.Button,
-	                    { onClick: this.register },
+	                    { onClick: this.register, bsStyle: 'primary', active: true },
 	                    'Register'
 	                )
 	            );
@@ -45666,7 +45693,7 @@
 	                ),
 	                _react2['default'].createElement(
 	                    _reactBootstrap.Button,
-	                    { onClick: this.login },
+	                    { onClick: this.login, bsStyle: 'primary', active: true },
 	                    'Login'
 	                )
 	            );
@@ -46095,7 +46122,6 @@
 	var _utilsSerialize = __webpack_require__(511);
 	
 	function trackAdded(response) {
-	    console.log(response);
 	    if (response.success) {
 	        return {
 	            type: _constants.PLAYLIST_TRACK_ADDED,
@@ -46155,7 +46181,194 @@
 	
 	var _ApplicationStore2 = _interopRequireDefault(_ApplicationStore);
 	
-	var _actionsLoadPlaylist = __webpack_require__(523);
+	var _actionsRemoveSong = __webpack_require__(523);
+	
+	var RemoveSong = (function (_Component) {
+	    _inherits(RemoveSong, _Component);
+	
+	    function RemoveSong() {
+	        _classCallCheck(this, _RemoveSong);
+	
+	        _get(Object.getPrototypeOf(_RemoveSong.prototype), 'constructor', this).call(this);
+	        this.remove = this.remove.bind(this);
+	        this.cancel = this.cancel.bind(this);
+	        this.currentValue = "";
+	    }
+	
+	    _createClass(RemoveSong, [{
+	        key: 'remove',
+	        value: function remove() {
+	            (0, _ApplicationStore.dispatch)((0, _actionsRemoveSong.removeTrack)({
+	                playlistID: this.props.currentPlaylist._id,
+	                songID: this.props.song._id
+	            }));
+	            this.props.wrapModal(null);
+	        }
+	    }, {
+	        key: 'cancel',
+	        value: function cancel() {
+	            this.props.wrapModal(null);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                'div',
+	                null,
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Button,
+	                    { onClick: this.cancel },
+	                    'No'
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrap.Button,
+	                    { onClick: this.remove },
+	                    'Yes'
+	                )
+	            );
+	        }
+	    }]);
+	
+	    var _RemoveSong = RemoveSong;
+	    RemoveSong = (0, _reactRedux.connect)(function (_ref) {
+	        var currentPlaylist = _ref.playlists.currentPlaylist;
+	        return { currentPlaylist: currentPlaylist };
+	    })(RemoveSong) || RemoveSong;
+	    return RemoveSong;
+	})(_react.Component);
+	
+	exports['default'] = RemoveSong;
+	module.exports = exports['default'];
+
+/***/ },
+/* 523 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _constants = __webpack_require__(247);
+	
+	var _applicationConstants = __webpack_require__(251);
+	
+	var _utilsSerialize = __webpack_require__(511);
+	
+	var _loadPlaylist = __webpack_require__(524);
+	
+	var _ApplicationStore = __webpack_require__(224);
+	
+	function trackRemoved(response) {
+	    var playlist = response.playlist;
+	    if (response.success) {
+	        (0, _ApplicationStore.dispatch)((0, _loadPlaylist.loadPl)({
+	            playlist: playlist.title,
+	            owner: playlist.owner
+	        }));
+	        return {
+	            type: _constants.PLAYLIST_TRACK_REMOVED,
+	            playlist: playlist
+	        };
+	    } else {
+	        return {
+	            type: _applicationConstants.SHOW_ERROR,
+	            message: response.message
+	        };
+	    }
+	}
+	
+	var removeTrack = function removeTrack(data) {
+	    return function (dispatch) {
+	        return fetch('/api/1/pl/removeSong', { headers: {
+	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+	            }, method: 'POST', body: (0, _utilsSerialize.serialize)(data) }).then(function (response) {
+	            return response.json();
+	        }).then(function (data) {
+	            return dispatch(trackRemoved(data));
+	        });
+	    };
+	};
+	exports.removeTrack = removeTrack;
+
+/***/ },
+/* 524 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _constants = __webpack_require__(247);
+	
+	var _applicationConstants = __webpack_require__(251);
+	
+	var _utilsSerialize = __webpack_require__(511);
+	
+	function playlistLoaded(response) {
+	    if (response.success) {
+	        return {
+	            type: _constants.PLAYLIST_LOADED,
+	            currentPlaylist: response.currentPlaylist,
+	            playlistSongs: response.playlistSongs
+	        };
+	    } else {
+	        return {
+	            type: _applicationConstants.SHOW_ERROR,
+	            message: response.message
+	        };
+	    }
+	}
+	
+	var loadPl = function loadPl(data) {
+	    return function (dispatch) {
+	        return fetch('/api/1/pl/load', { headers: {
+	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+	            }, method: 'POST', body: (0, _utilsSerialize.serialize)(data) }).then(function (response) {
+	            return response.json();
+	        }).then(function (data) {
+	            return dispatch(playlistLoaded(data));
+	        });
+	    };
+	};
+	exports.loadPl = loadPl;
+
+/***/ },
+/* 525 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactBootstrap = __webpack_require__(265);
+	
+	var _reactRedux = __webpack_require__(206);
+	
+	var _ApplicationStore = __webpack_require__(224);
+	
+	var _ApplicationStore2 = _interopRequireDefault(_ApplicationStore);
+	
+	var _actionsLoadPlaylist = __webpack_require__(524);
 	
 	var LoadPlaylist = (function (_Component) {
 	    _inherits(LoadPlaylist, _Component);
@@ -46236,51 +46449,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 523 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	var _constants = __webpack_require__(247);
-	
-	var _applicationConstants = __webpack_require__(251);
-	
-	var _utilsSerialize = __webpack_require__(511);
-	
-	function playlistLoaded(response) {
-	    if (response.success) {
-	        return {
-	            type: _constants.PLAYLIST_LOADED,
-	            currentPlaylist: response.currentPlaylist,
-	            playlistSongs: response.playlistSongs
-	        };
-	    } else {
-	        return {
-	            type: _applicationConstants.SHOW_ERROR,
-	            message: response.message
-	        };
-	    }
-	}
-	
-	var loadPl = function loadPl(data) {
-	    return function (dispatch) {
-	        return fetch('/api/1/pl/load', { headers: {
-	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-	            }, method: 'POST', body: (0, _utilsSerialize.serialize)(data) }).then(function (response) {
-	            return response.json();
-	        }).then(function (data) {
-	            return dispatch(playlistLoaded(data));
-	        });
-	    };
-	};
-	exports.loadPl = loadPl;
-
-/***/ },
-/* 524 */
+/* 526 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46302,7 +46471,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 525 */
+/* 527 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46329,7 +46498,7 @@
 	
 	var _ApplicationStore2 = _interopRequireDefault(_ApplicationStore);
 	
-	var _componentsTabsInstance = __webpack_require__(526);
+	var _componentsTabsInstance = __webpack_require__(528);
 	
 	var _componentsTabsInstance2 = _interopRequireDefault(_componentsTabsInstance);
 	
@@ -46360,7 +46529,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 526 */
+/* 528 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46385,29 +46554,54 @@
 	
 	var _reactBootstrap = __webpack_require__(265);
 	
-	var _componentsTrackList = __webpack_require__(527);
+	var _componentsTrackList = __webpack_require__(529);
 	
 	var _componentsTrackList2 = _interopRequireDefault(_componentsTrackList);
 	
-	var _Playlists = __webpack_require__(529);
+	var _Playlists = __webpack_require__(531);
 	
 	var _Playlists2 = _interopRequireDefault(_Playlists);
+	
+	var _userActionsLoadPlaylist = __webpack_require__(524);
+	
+	var _ApplicationStore = __webpack_require__(224);
+	
+	var _reactRedux = __webpack_require__(206);
+	
+	var PLAYLIST_KEY = 4;
 	
 	var TabsInstance = (function (_Component) {
 	    _inherits(TabsInstance, _Component);
 	
 	    function TabsInstance() {
-	        _classCallCheck(this, TabsInstance);
+	        _classCallCheck(this, _TabsInstance);
 	
-	        _get(Object.getPrototypeOf(TabsInstance.prototype), 'constructor', this).apply(this, arguments);
+	        _get(Object.getPrototypeOf(_TabsInstance.prototype), 'constructor', this).call(this);
+	        this.state = {
+	            key: 1
+	        };
+	        this.handleSelect = this.handleSelect.bind(this);
 	    }
 	
 	    _createClass(TabsInstance, [{
+	        key: 'handleSelect',
+	        value: function handleSelect(key) {
+	            if (key == PLAYLIST_KEY) {
+	                if (this.props.playlistLoaded) {
+	                    (0, _ApplicationStore.dispatch)((0, _userActionsLoadPlaylist.loadPl)({
+	                        playlist: this.props.currentPlaylist.title,
+	                        owner: this.props.currentPlaylist.owner
+	                    }));
+	                }
+	            }
+	            this.setState({ key: key });
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return _react2['default'].createElement(
 	                _reactBootstrap.Tabs,
-	                { defaultActiveKey: 2 },
+	                { activeKey: this.state.key, onSelect: this.handleSelect },
 	                _react2['default'].createElement(
 	                    _reactBootstrap.Tab,
 	                    { eventKey: 1, title: 'Tracks' },
@@ -46424,6 +46618,14 @@
 	        }
 	    }]);
 	
+	    var _TabsInstance = TabsInstance;
+	    TabsInstance = (0, _reactRedux.connect)(function (_ref) {
+	        var _ref$playlists = _ref.playlists;
+	        var playlistLoaded = _ref$playlists.playlistLoaded;
+	        var currentPlaylist = _ref$playlists.currentPlaylist;
+	        var playlistSongs = _ref$playlists.playlistSongs;
+	        return { playlistLoaded: playlistLoaded, currentPlaylist: currentPlaylist, playlistSongs: playlistSongs };
+	    })(TabsInstance) || TabsInstance;
 	    return TabsInstance;
 	})(_react.Component);
 	
@@ -46431,7 +46633,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 527 */
+/* 529 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46456,7 +46658,7 @@
 	
 	var _reactBootstrap = __webpack_require__(265);
 	
-	var _Song = __webpack_require__(528);
+	var _Song = __webpack_require__(530);
 	
 	var _Song2 = _interopRequireDefault(_Song);
 	
@@ -46480,11 +46682,13 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this = this;
+	
 	            return _react2['default'].createElement(
 	                _reactBootstrap.ListGroup,
 	                null,
 	                this.props.playlist ? this.props.playlistSongs ? this.props.playlistSongs.map(function (song) {
-	                    return _react2['default'].createElement(_Song2['default'], { song: song, playlist: true });
+	                    return _react2['default'].createElement(_Song2['default'], { song: song, playlist: _this.props.playlist });
 	                }) : null : this.state.tracks ? this.state.tracks.tracks.map(function (song) {
 	                    return _react2['default'].createElement(_Song2['default'], { song: song });
 	                }) : null
@@ -46504,7 +46708,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 528 */
+/* 530 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46532,6 +46736,7 @@
 	var _userComponentsIndex = __webpack_require__(508);
 	
 	var MODAL_ADD_SONG = 'MODAL_ADD_SONG';
+	var MODAL_REMOVE_SONG = 'MODAL_REMOVE_SONG';
 	
 	var Song = (function (_Component) {
 	    _inherits(Song, _Component);
@@ -46590,7 +46795,9 @@
 	        }
 	    }, {
 	        key: 'remove',
-	        value: function remove() {}
+	        value: function remove() {
+	            this.wrapModal(MODAL_REMOVE_SONG);
+	        }
 	    }, {
 	        key: 'HoverEnter',
 	        value: function HoverEnter() {
@@ -46642,13 +46849,13 @@
 	                        _react2['default'].createElement(
 	                            _reactBootstrap.Modal.Title,
 	                            { id: 'contained-modal-title-sm' },
-	                            'Add Song To'
+	                            this.state.modal == MODAL_ADD_SONG ? "Add Song To" : this.state.modal == MODAL_REMOVE_SONG ? "Do you want remove " + this.props.song.title + " from " + this.props.playlist : null
 	                        )
 	                    ),
 	                    _react2['default'].createElement(
 	                        _reactBootstrap.Modal.Body,
 	                        null,
-	                        this.state.modal == MODAL_ADD_SONG ? _react2['default'].createElement(_userComponentsIndex.AddSong, { wrapModal: this.wrapModal, song: this.props.song }) : null
+	                        this.state.modal == MODAL_ADD_SONG ? _react2['default'].createElement(_userComponentsIndex.AddSong, { wrapModal: this.wrapModal, song: this.props.song }) : this.state.modal == MODAL_REMOVE_SONG ? _react2['default'].createElement(_userComponentsIndex.RemoveSong, { wrapModal: this.wrapModal, song: this.props.song }) : null
 	                    )
 	                )
 	            );
@@ -46662,7 +46869,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 529 */
+/* 531 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46685,11 +46892,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _PlaylistsMenu = __webpack_require__(530);
+	var _PlaylistsMenu = __webpack_require__(532);
 	
 	var _PlaylistsMenu2 = _interopRequireDefault(_PlaylistsMenu);
 	
-	var _PlaylistSongs = __webpack_require__(531);
+	var _PlaylistSongs = __webpack_require__(533);
 	
 	var _PlaylistSongs2 = _interopRequireDefault(_PlaylistSongs);
 	
@@ -46728,7 +46935,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 530 */
+/* 532 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46839,7 +47046,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 531 */
+/* 533 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46864,7 +47071,7 @@
 	
 	var _reactRedux = __webpack_require__(206);
 	
-	var _TrackList = __webpack_require__(527);
+	var _TrackList = __webpack_require__(529);
 	
 	var _TrackList2 = _interopRequireDefault(_TrackList);
 	
@@ -46888,7 +47095,7 @@
 	                    null,
 	                    this.props.currentPlaylist.title
 	                ),
-	                _react2['default'].createElement(_TrackList2['default'], { playlist: true, playlistSongs: this.props.playlistSongs })
+	                _react2['default'].createElement(_TrackList2['default'], { playlist: this.props.currentPlaylist.title, playlistSongs: this.props.playlistSongs })
 	            );
 	        }
 	    }]);

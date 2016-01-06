@@ -29,7 +29,7 @@ class Login extends Component {
                 <div className="form-group">
                     <input className="form-control" ref="password" placeholder="Password" type="password"/>
                 </div>
-                <Button onClick={this.login}>Login</Button>
+                <Button onClick={this.login} bsStyle="primary" active>Login</Button>
             </div>
         );
     }
