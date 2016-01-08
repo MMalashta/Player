@@ -8,6 +8,17 @@ class TrackList extends Component {
     constructor() {
         super();
         this.state = {};
+        this.currentSong = null;
+        this.changePlayingSong = this.changePlayingSong.bind(this);
+    }
+
+    changePlayingSong(id) {
+        if (id && id !== null) {
+            if (this.currentSong !== null) {
+                this.refs[this.currentSong].pause();
+            }
+        }
+        this.currentSong = id;
     }
 
     componentWillReceiveProps(newProps) {
@@ -17,8 +28,12 @@ class TrackList extends Component {
     render(){
         return <ListGroup>
             {this.props.playlist ? this.props.playlistSongs ? this.props.playlistSongs.map((song)=>
-            {return <Song song={song} playlist={this.props.playlist}/>}) : null
-                : this.state.tracks ? this.state.tracks.tracks.map((song)=>{return <Song song={song} />}) : null}
+            {
+                return <Song song={song} playlist={this.props.playlist} ref={song._id} changePlayingSong={this.changePlayingSong}/>
+            }) : null
+                : this.state.tracks ? this.state.tracks.tracks.map((song)=>{
+                    return <Song song={song} ref={song._id} changePlayingSong={this.changePlayingSong}/>
+            }) : null}
        </ListGroup>
     }
 }

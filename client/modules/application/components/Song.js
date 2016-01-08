@@ -21,10 +21,6 @@ class Song extends Component {
         };
     }
 
-    componertWillReceiveProps(newProp) {
-        console.log("here", newProps);
-    }
-
     wrapModal(type) {
         this.setState({
             modal: type
@@ -33,6 +29,7 @@ class Song extends Component {
 
     play() {
         if (!this.isPlaying) {
+            this.props.changePlayingSong(this.props.song._id);
             this.refs.audio.play();
             this.refs.wrapper.style.background = "#B2DFDB";
             this.isPlaying = true;
@@ -44,6 +41,7 @@ class Song extends Component {
             this.refs.audio.pause();
             this.refs.wrapper.style.background = "#EEEEEE";
             this.isPlaying = false;
+            this.props.changePlayingSong(null);
         }
     }
 

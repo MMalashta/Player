@@ -132,7 +132,6 @@ app.get('/api/1/tracks', (req, res, next) => {
 });
 
 app.post('/api/1/pl/create', (req, res, next) => {
-    console.log(req.body);
     let promise = new Promise((resolve, reject) => {
         Playlist.findOne({"title": req.body.title, "owner": req.body.owner}, (err, pl) => {
             if (err) {
@@ -178,29 +177,25 @@ app.post('/api/1/pl/create', (req, res, next) => {
 });
 
 app.post('/api/1/pl/remove', (req, res, next) => {
-    console.log(req.body.checkedPlaylists);
-    Playlist.remove({'_id': {$in: req.body.checkedPlaylists}}, (err)=> {
+    let removePlaylistIds = [];
+    Playlist.find({'_id': {$in: req.body.checkedPlaylists}}, (err, playlists)=> {
         if (err) {
             return res.json({
                 success: false,
                 message: err.message
             });
         }
-    });
-    Playlist.find({"owner": req.body.userID}, (err, playlists)=> {
-        if (err) {
-            return res.json({
-                success: false,
-                message: err.message
-            });
-        }
+
+        playlists.forEach( (playlist) => {
+            removePlaylistIds.push(playlist._id);
+            playlist.remove();
+        });
 
         return res.json({
             success: true,
-            data: playlists
+            removePlaylistIds: removePlaylistIds
         });
-    })
-
+    });
 });
 
 app.post('/api/1/pl/loadAll', (req, res, next) => {

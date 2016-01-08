@@ -22,7 +22,7 @@ export default class RemovePlaylist extends Component {
                 result.checkedPlaylists.push(playlsit._id);
             }
         });
-        console.log(result.checkedPlaylists);
+
         dispatch(removePl({
             playlistIDs: result,
             userID: this.props.playlists.playlists[0].owner

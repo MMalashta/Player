@@ -8,7 +8,21 @@ export default function(state = {}, action) {
         }
 
         case PLAYLIST_REMOVED:{
-            return Object.assign({}, state, {playlists: action.data});
+            let playlistLoaded = true,
+                currentplaylistId = state.currentPlaylist._id,
+                removePlaylistIds = action.removePlaylistIds,
+                oldPlaylists = state.playlists;
+
+            oldPlaylists = oldPlaylists.filter((playlist) => {
+                if (removePlaylistIds.indexOf(playlist._id) !== -1) {
+                    if (playlist._id === currentplaylistId) {
+                        playlistLoaded = false;
+                    }
+                    return false;
+                }
+                return true;
+            });
+            return Object.assign({}, state, {playlists: oldPlaylists, playlistLoaded: playlistLoaded});
         }
 
         case PLAYLISTS_LOADED: {

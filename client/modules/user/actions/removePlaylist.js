@@ -5,10 +5,9 @@ import createAsyncAction from 'redux-promise'
 
 function playlistRemoved(response) {
     if (response.success) {
-        console.log("REMOVE", response);
         return {
             type: PLAYLIST_REMOVED,
-            data: response.data
+            removePlaylistIds: response.removePlaylistIds
         }
     } else {
         return {
