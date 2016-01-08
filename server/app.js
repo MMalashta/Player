@@ -17,6 +17,7 @@ import checkUser from './modules/user/middleware/checkUser'
 import User from './modules/user/documents/User'
 import Playlist from './modules/application/documents/Playlist'
 import Song from './modules/application/documents/Song'
+import Artist from './modules/application/documents/Artist'
 
 var app = express();
 
@@ -129,6 +130,48 @@ app.get('/api/1/tracks', (req, res, next) => {
             data: songSet
         })
     });
+});
+
+app.get('/api/1/artist/load', (req, res, next) => {
+    Artist.find((err,artists) =>{
+        if (err) {
+            res.json({
+                success: false,
+                message: err.message
+            })
+        }
+        res.json({
+            success: true,
+            data: artists
+        })
+    });
+});
+
+app.post('/api/1/artist/create', (req, res, next) => {
+    let tracks = req.body.tracks.split(", "),
+        tags = req.body.tags.split(", "),
+        {name, description, imgUrl} = req.body;
+
+    let artist = new Artist({
+        name: name,
+        description: description,
+        imgUrl: imgUrl,
+        tracks: tracks,
+        tags: tags
+    });
+
+    artist.save((err, artist) => {
+        if (err) {
+            return res.json({
+                success: false,
+                message: err.message
+            });
+        }
+    });
+
+    res.json({
+        status: 200
+    })
 });
 
 app.post('/api/1/pl/create', (req, res, next) => {

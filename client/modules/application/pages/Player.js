@@ -5,7 +5,7 @@ import TabsInstance from '../components/TabsInstance'
 class Player extends Component{
     render() {
         return <div id="player">
-                <TabsInstance></TabsInstance>
+            <TabsInstance></TabsInstance>
         </div>
     }
 }

@@ -3,6 +3,7 @@ import {SHOW_ERROR} from './../../application/constants'
 import {serialize} from '../../../utils/serialize'
 import {loadAll} from './loadAllPlaylists'
 import {loadTracks} from './loadTracks'
+import {loadArtists} from './loadArtists'
 import {dispatch} from '../../../ApplicationStore'
 
 function userAuthenticated(response) {
@@ -12,6 +13,7 @@ function userAuthenticated(response) {
             userID: response.data._id
         }));
         dispatch(loadTracks());
+        dispatch(loadArtists());
         return {
             type: LOGIN_USER,
             data: response.data,

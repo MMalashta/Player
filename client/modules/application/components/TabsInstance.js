@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Tab, Tabs} from 'react-bootstrap'
 import TrackList from '../components/TrackList'
 import Playlists from './Playlists'
+import Artists from './Artists'
 import {loadPl} from '../../user/actions/loadPlaylist'
 import {dispatch} from '../../../ApplicationStore'
 import {connect} from 'react-redux'
@@ -33,8 +34,8 @@ class TabsInstance extends Component{
     render() {
         return <Tabs activeKey={this.state.key} onSelect={this.handleSelect}>
             <Tab eventKey={1} title="Tracks"><TrackList/></Tab>
-            <Tab eventKey={2} title="Albums" disabled></Tab>
-            <Tab eventKey={3} title="Artists" disabled></Tab>
+            <Tab eventKey={2} title="Albums" disabled>1</Tab>
+            <Tab eventKey={3} title="Artists"><Artists /></Tab>
             <Tab eventKey={4} title="Playlists"><Playlists/></Tab>
         </Tabs>
     }
