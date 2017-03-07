@@ -1,8 +1,8 @@
 import {PLAYLIST_TRACK_REMOVED} from './../constants'
-import {SHOW_ERROR} from './../../application/constants'
-import {serialize} from '../../../utils/serialize'
+import {SHOW_ERROR} from './../constants'
+import {serialize} from './../utils/serialize'
 import {loadPl} from './loadPlaylist'
-import {dispatch} from '../../../ApplicationStore'
+import {dispatch} from './../ApplicationStore'
 
 function trackRemoved(response) {
     let playlist = response.playlist;

@@ -1,6 +1,6 @@
 import {TRACKS_LOADED} from './../constants'
-import {SHOW_ERROR} from './../../application/constants'
-import {serialize} from '../../../utils/serialize'
+import {SHOW_ERROR} from './../constants'
+import {serialize} from './../utils/serialize'
 import createAsyncAction from 'redux-promise'
 
 function tracksLoaded(response) {

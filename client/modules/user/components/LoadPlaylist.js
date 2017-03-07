@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Button, FormControls, Row, Col} from 'react-bootstrap'
 import {connect} from 'react-redux'
 import ApplicationStore, {dispatch} from '../../../ApplicationStore'
-import {loadPl} from '../actions/loadPlaylist'
+import {loadPl} from '../../../actions/loadPlaylist'
 
 @connect((playlists) => (playlists))
 @connect(({auth: {user}}) => ({user}))

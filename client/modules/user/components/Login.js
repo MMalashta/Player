@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Input, Button, Alert} from 'react-bootstrap'
 import {connect} from 'react-redux'
 import ApplicationStore, {dispatch} from '../../../ApplicationStore'
-import {auth} from '../actions/login'
+import {auth} from '../../../actions/login'
 
 @connect(({error}) => ({error}))
 class Login extends Component {

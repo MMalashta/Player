@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {Navbar, Nav, NavItem, Modal, Button} from 'react-bootstrap'
 import {Registration, Login} from './../../user/index'
 import {dispatch} from '../../../ApplicationStore'
-import logOut from './../../user/actions/logout'
+import logOut from './../../../actions/logout'
 
 const MODAL_REGISTER = 'MODAL_REGISTER';
 const MODAL_LOGIN = 'MODAL_LOGIN';

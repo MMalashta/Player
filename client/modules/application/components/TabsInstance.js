@@ -3,7 +3,7 @@ import {Tab, Tabs} from 'react-bootstrap'
 import TrackList from '../components/TrackList'
 import Playlists from './Playlists'
 import Artists from './Artists'
-import {loadPl} from '../../user/actions/loadPlaylist'
+import {loadPl} from '../../../actions/loadPlaylist'
 import {dispatch} from '../../../ApplicationStore'
 import {connect} from 'react-redux'
 

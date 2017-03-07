@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Button, Row, Col} from 'react-bootstrap'
 import {connect} from 'react-redux'
 import ApplicationStore, {dispatch} from '../../../ApplicationStore'
-import {createPl} from '../actions/createPlaylist'
+import {createPl} from '../../../actions/createPlaylist'
 
 @connect(({auth: {user}}) => ({user}))
 export default class CreatePlaylist extends Component {

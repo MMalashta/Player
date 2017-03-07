@@ -1,4 +1,4 @@
-import Token from './../documents/Token'
+import Token from './../../../documents/Token'
 import randomstring from 'randomstring'
 
 function createToken(user) {

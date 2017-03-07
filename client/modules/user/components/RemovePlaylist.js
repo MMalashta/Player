@@ -3,7 +3,7 @@ import {Button} from 'react-bootstrap'
 import {connect} from 'react-redux'
 import ApplicationStore, {dispatch} from '../../../ApplicationStore'
 import CheckBox from '../../application/components/CheckBox'
-import {removePl} from '../actions/removePlaylist'
+import {removePl} from '../../../actions/removePlaylist'
 
 @connect((playlists) => (playlists))
 export default class RemovePlaylist extends Component {

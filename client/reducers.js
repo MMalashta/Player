@@ -1,10 +1,10 @@
 import {combineReducers} from 'redux'
-import auth from './modules/user/reducers/login'
-import reg from './modules/user/reducers/registrate'
-import loadTracks from './modules/user/reducers/loadTracks'
-import loadArtists from './modules/user/reducers/loadArtists'
-import error from './modules/application/reducers/error'
-import playlists from './modules/user/reducers/playlists'
+import auth from './reducers/login'
+import reg from './reducers/registrate'
+import loadTracks from './reducers/loadTracks'
+import loadArtists from './reducers/loadArtists'
+import error from './reducers/error'
+import playlists from './reducers/playlists'
 
 export default combineReducers({
     auth: auth,

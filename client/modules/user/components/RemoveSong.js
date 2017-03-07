@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Button} from 'react-bootstrap'
 import {connect} from 'react-redux'
 import ApplicationStore, {dispatch} from '../../../ApplicationStore'
-import {removeTrack} from '../actions/removeSong'
+import {removeTrack} from '../../../actions/removeSong'
 
 @connect(({playlists: {currentPlaylist}}) => ({currentPlaylist}))
 export default class RemoveSong extends Component {

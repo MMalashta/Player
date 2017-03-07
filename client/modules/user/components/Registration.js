@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Input, Button, Alert} from 'react-bootstrap'
 import ApplicationStore, {dispatch} from '../../../ApplicationStore'
-import {registrate} from '../actions/registrate'
+import {registrate} from '../../../actions/registrate'
 
 export default class Registration extends Component {
     constructor (...options) {
